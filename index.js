@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
-
+import postsRouter from './src/router/post.js'
 
 dotenv.config()
 
