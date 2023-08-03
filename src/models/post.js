@@ -8,33 +8,37 @@ const PostSchema = new mongoose.Schema(
     mainImage: {
       type: String,
     },
-    tittle: {
+    title: {
       type: String,
+    },
+    type: {
+      type: String,
+      enum: ['Salad', 'Dessert', 'Breakfast'],
     },
     duration: {
       type: Number,
     },
     difficulty: {
       type: String,
-      enum: ['easy', 'moderate', 'difficult'],
+      enum: ['Easy', 'Moderate', 'Difficult'],
     },
     allergies: {
       type: String,
       enum: [
-        'gluten',
-        'crustáceos',
-        'huevos',
-        'pescado',
-        'cacahuetes',
-        'soja',
-        'lácteos',
-        'frutos con cáscara',
-        'apio',
-        'mostaza',
-        'sésamo',
-        'sulfitos',
-        'altramuces',
-        'moluscos',
+        'Gluten',
+        'Crustáceos',
+        'Huevos',
+        'Pescado',
+        'Cacahuetes',
+        'Soja',
+        'Lácteos',
+        'Frutos con cáscara',
+        'Apio',
+        'Mostaza',
+        'Sésamo',
+        'Sulfitos',
+        'Altramuces',
+        'Moluscos',
       ],
     },
     description: {
@@ -49,7 +53,16 @@ const PostSchema = new mongoose.Schema(
       },
       unity: {
         type: String,
-        enum: ['Litro', 'Mililitro', 'Kilogramos', 'Gramos', 'Libra', 'Onza', 'Cucharada sopera', 'Cucharada postregit'],
+        enum: [
+          'Litro',
+          'Mililitro',
+          'Kilogramos',
+          'Gramos',
+          'Libra',
+          'Onza',
+          'Tablespoon',
+          'Tablespoon dessert',
+        ],
       },
     },
     dinners: {
