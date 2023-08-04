@@ -40,9 +40,9 @@ export const getPostById = async (id) => {
  * @param {"Salad" | "Dessert" | "Breakfast"} data.type
  * @param {number} data.duration
  * @param {"Easy" | "Moderate" | "Difficult"} data.difficulty
- * @param {"Gluten" | "Crustáceos" | "Huevos" | "Pescado" | "Cacahuetes" | "Soja" | "Lácteos" | "Frutos con cáscara" | "Apio"  | "Mostaza" | "Sésamo" | "Sulfitos" | "Altramuces" | "Moluscos"} data.allergies
+ * @param {"Gluten" | "Crustaceans" | "Eggs" | "Fish" | "Peanuts" | "Soy" | "Dairy" | "Nuts in shell" | "Celery"  | "Mustard" | "Sesame" | "Sulphites" | "Lupins" | "Mollusks"} data.allergies
  * @param {string} data.description
- * @param {{ name: string, quantity: number, unity: "Litro" | "Mililitro" | "Kilogramos" | "Gramos" | "Libra" | "Onza" | "Tablespoon" | "Cucharada postre" }} data.ingredients
+ * @param {{ name: string, quantity: number, unity: "Liter" | "Milliliter" | "Kilograms" | "Grams" | "Pound" | "Ounce" | "Tablespoon" | "Tablespoon dessert" }} data.ingredients
  * @param {number} data.dinners
  * @param {{title: string, description: string, order: number, image: string }} data.steps
  */
@@ -77,19 +77,19 @@ export const createPost = async ({ data, user }) => {
 
   const validPostAllergies = [
     'Gluten',
-    'Crustáceos',
-    'Huevos',
-    'Pescado',
-    'Cacahuetes',
-    'Soja',
-    'Lácteos',
-    'Frutos con cáscara',
-    'Apio',
-    'Mostaza',
-    'Sésamo',
-    'Sulfitos',
-    'Altramuces',
-    'Moluscos',
+    'Crustaceans',
+    'Eggs',
+    'Fish',
+    'Peanuts',
+    'Soy',
+    'Dairy',
+    'Nuts in shell',
+    'Celery',
+    'Mustard',
+    'Sesame',
+    'Sulphites',
+    'Lupins',
+    'Mollusks',
   ]
   if (!validPostAllergies.includes(allergies)) {
     throw new Error('This is not valid allergie')
@@ -97,12 +97,12 @@ export const createPost = async ({ data, user }) => {
 
   //REVISAR ------>
   const validPostIngredientsUnity = [
-    'Litro',
-    'Mililitro',
-    'Kilogramos',
-    'Gramos',
-    'Libra',
-    'Onza',
+    'Liter',
+    'Milliliter',
+    'Kilograms',
+    'Grams',
+    'Pound',
+    'Ounce',
     'Tablespoon',
     'Tablespoon dessert',
   ]
