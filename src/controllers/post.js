@@ -188,6 +188,13 @@ export const updatePost = async ({ id, data, user }) => {
     throw new Error('Post not found')
   }
 
+  if (
+    post.sellerId.toString() !== user._id.toString() &&
+    user.rol !== 'admin'
+  ) {
+    throw new Error('no tienes permiso')
+  }
+
   if (userId) {
     post.userId = userId
   }
@@ -280,6 +287,12 @@ export const updatePost = async ({ id, data, user }) => {
 export const deletePostById = async ({ postId }) => {
   const post = await getPostById(postId)
 
+  if (
+    post.sellerId.toString() !== user._id.toString() &&
+    user.rol !== 'admin'
+  ) {
+    throw new Error('no tienes permiso')
+  }
   await Post.deleteOne({ _id: postId })
 
   return true
