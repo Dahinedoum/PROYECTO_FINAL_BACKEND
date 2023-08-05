@@ -65,6 +65,11 @@ export const createPost = async ({ data, user }) => {
     throw new Error("You can't post if you are not registred")
   }
 
+  const existPost = await Post.findOne({ title, type, userId })
+  if (existPost) {
+    throw new Error('This post already exist!')
+  }
+
   const validPostType = ['Salad', 'Dessert', 'Breakfast']
   if (!validPostType.includes(type)) {
     throw new Error('This is not valid type')
@@ -73,34 +78,6 @@ export const createPost = async ({ data, user }) => {
   const validPostDifficulty = ['Easy', 'Moderate', 'Difficult']
   if (!validPostDifficulty.includes(difficulty)) {
     throw new Error('This is not valid difficulty')
-  }
-
-  if (userId) {
-    post.userId = userId
-  }
-
-  if (mainImage) {
-    post.mainImage = mainImage
-  }
-
-  if (title) {
-    post.title = title
-  }
-
-  if (duration) {
-    post.duration = duration
-  }
-
-  if (steps) {
-    post.steps = steps
-  }
-
-  if (dinners) {
-    post.dinners = dinners
-  }
-
-  if (description) {
-    post.description = description
   }
 
   const validPostAllergies = [
@@ -119,9 +96,6 @@ export const createPost = async ({ data, user }) => {
     'Lupins',
     'Mollusks',
   ]
-  if (!validPostAllergies.includes(allergies)) {
-    throw new Error('This is not valid allergie')
-  }
 
   const validPostIngredientsUnity = [
     'Liter',
@@ -133,8 +107,16 @@ export const createPost = async ({ data, user }) => {
     'Tablespoon',
     'Tablespoon dessert',
   ]
-  if (!validPostIngredientsUnity.includes(ingredients.unity)) {
-    throw new Error('This is not valid unity')
+  if (ingredients.unity) {
+    if (!validPostIngredientsUnity.includes(ingredients.unity)) {
+      throw new Error('This is not valid unity')
+    }
+  }
+
+  if (allergies) {
+    if (!validPostAllergies.includes(allergies)) {
+      throw new Error('This is not valid allergie')
+    }
   }
 
   const post = new Post({
@@ -168,7 +150,7 @@ export const createPost = async ({ data, user }) => {
  * @param {number} data.dinners
  * @param {{title: string, description: string, order: number, image: string }} data.steps
  */
-export const updatePost = async ({ id, data, user }) => {
+export const updatePostById = async ({ id, data, user }) => {
   const {
     userId,
     mainImage,
