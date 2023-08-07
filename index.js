@@ -1,9 +1,33 @@
-import express from "express";
-import bodyParser from "body-parser";
-import dotenv from "dotenv";
+import express from 'express'
+import bodyParser from 'body-parser'
+import dotenv from 'dotenv'
 import cors from 'cors'
 import postsRouter from './src/router/post.js'
 import connectToDb from './src/services/db.js'
+import swaggerUi from 'swagger-ui-express'
+import swaggerJSDoc from 'swagger-jsdoc'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+const swaggerSpec = {
+  definition: {
+    openapi: '3.1.0',
+    info: {
+      title: 'Car renting API',
+      version: '1.0.0',
+    },
+    servers: [
+      {
+        url: 'http://localhost:8080',
+      },
+    ],
+  },
+  apis: [`${path.join(__dirname, './src/router/*.js')}`],
+}
+
 dotenv.config()
 
 const startApp = async () => {
@@ -11,17 +35,19 @@ const startApp = async () => {
   const port = process.env.PORT
   app.use(cors())
 
-
   app.use(bodyParser.json())
   app.use(
     bodyParser.urlencoded({
       extended: true,
     })
   )
-
+  app.use(
+    '/api-doc',
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerJSDoc(swaggerSpec))
+  )
 
   app.use('/posts', postsRouter)
-
 
   try {
     await connectToDb()
