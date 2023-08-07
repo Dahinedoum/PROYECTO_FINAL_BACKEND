@@ -16,7 +16,7 @@ const swaggerSpec = {
   definition: {
     openapi: '3.1.0',
     info: {
-      title: 'Car renting API',
+      title: 'Food social media API',
       version: '1.0.0',
     },
     servers: [
