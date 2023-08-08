@@ -10,13 +10,16 @@ const PostSchema = new mongoose.Schema(
     },
     title: {
       type: String,
+      required: true,
     },
     type: {
       type: String,
       enum: ['Salad', 'Dessert', 'Breakfast'],
+      required: true,
     },
     duration: {
       type: Number,
+      required: true,
     },
     difficulty: {
       type: String,
@@ -64,8 +67,9 @@ const PostSchema = new mongoose.Schema(
           'Tablespoon dessert',
         ],
       },
+      required: true,
     },
-    dinners: {
+    diners: {
       type: Number,
     },
     steps: {
@@ -81,6 +85,7 @@ const PostSchema = new mongoose.Schema(
       image: {
         type: [String],
       },
+      required: true,
     },
     createdAt: {
       type: Date,

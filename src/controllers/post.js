@@ -1,5 +1,5 @@
 import Post from '../models/post.js'
-
+import User from '../models/user.js'
 //Get posts
 /**
  * @return {Promise<object[]>}
@@ -43,7 +43,7 @@ export const getPostById = async (id) => {
  * @param {"Gluten" | "Crustaceans" | "Eggs" | "Fish" | "Peanuts" | "Soy" | "Dairy" | "Nuts in shell" | "Celery"  | "Mustard" | "Sesame" | "Sulphites" | "Lupins" | "Mollusks"} data.allergies
  * @param {string} data.description
  * @param {{ name: string, quantity: number, unity: "Liter" | "Milliliter" | "Kilograms" | "Grams" | "Pound" | "Ounce" | "Tablespoon" | "Tablespoon dessert" }} data.ingredients
- * @param {number} data.dinners
+ * @param {number} data.diners
  * @param {{title: string, description: string, order: number, image: string }} data.steps
  */
 export const createPost = async ({ data, user }) => {
@@ -57,7 +57,7 @@ export const createPost = async ({ data, user }) => {
     allergies,
     description,
     ingredients,
-    dinners,
+    diners,
     steps,
   } = data
 
@@ -129,7 +129,7 @@ export const createPost = async ({ data, user }) => {
     allergies,
     description,
     ingredients,
-    dinners,
+    diners,
     steps,
   })
   return post.save()
@@ -161,7 +161,7 @@ export const updatePostById = async ({ id, data, user }) => {
     allergies,
     description,
     ingredients,
-    dinners,
+    diners,
     steps,
   } = data
 
@@ -197,8 +197,8 @@ export const updatePostById = async ({ id, data, user }) => {
     post.steps = steps
   }
 
-  if (dinners) {
-    post.dinners = dinners
+  if (diners) {
+    post.diners = diners
   }
 
   if (description) {
@@ -278,4 +278,36 @@ export const deletePostById = async ({ postId }) => {
   await Post.deleteOne({ _id: postId })
 
   return true
+}
+
+//Favorite post controller
+/**
+ * @param {string} postId
+ * @param {object} user
+ * @param {object[]} user.favPosts
+ */
+export const togglePostFavByUser = async (postId, user) => {
+  if (!postId) {
+    throw new Error('id is required')
+  }
+
+  if (!user) {
+    throw new Error('you must be registred')
+  }
+
+  const post = await getPostById(postId)
+  const currentFavs = user.favPosts || []
+  const existedFav = currentFavs.find(
+    (currentId) => currentId.toString() === postId.toString()
+  )
+
+  let newFavList = []
+  if (!existedFav) {
+    newFavList = [...currentFavs, postId]
+  } else {
+    newFavList = currentFavs.filter(
+      (currentId) => currentId.toString() !== postId.toString()
+    )
+  }
+  await User.updateOne({ _id: user._id }, { favPosts: newFavList })
 }
