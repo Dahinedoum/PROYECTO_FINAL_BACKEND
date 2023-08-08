@@ -228,7 +228,27 @@ router.delete('/:id', async (request, response) => {
   }
 })
 
+
 // Favorite post route
+/**
+ * @swagger
+ * /posts/{id}/favs:
+ *  post:
+ *    summary: favorite status of a post by user
+ *    tags: [Post]
+ *    parameters:
+ *      - name: id
+ *        in: path
+ *        description: id of the post to add favorite status
+ *        required: true
+ *        schema:
+ *          type: string
+ *    responses:
+ *      200:
+ *        description: favorite status toggled successfully
+ *      404:
+ *        description: post not found
+ */
 router.post('/:id/favs', async (request, response) => {
   try {
     await togglePostFavByUser(request.params.id, request.user)
