@@ -2,12 +2,13 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import dotenv from 'dotenv'
 import cors from 'cors'
-import postsRouter from './src/router/post.js'
-import connectToDb from './src/services/db.js'
 import swaggerUi from 'swagger-ui-express'
 import swaggerJSDoc from 'swagger-jsdoc'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import postsRouter from './src/router/post.js'
+import usersRouter from './src/router/user.js'
+import connectToDb from './src/services/db.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -48,6 +49,7 @@ const startApp = async () => {
   )
 
   app.use('/posts', postsRouter)
+  app.use('/users', usersRouter)
 
   try {
     await connectToDb()
