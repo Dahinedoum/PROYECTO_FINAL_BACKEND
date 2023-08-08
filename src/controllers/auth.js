@@ -48,6 +48,8 @@ export const signup = async ({
   age,
   country,
   gender,
+  city,
+  biography,
 }) => {
   if (
     !email ||
@@ -86,19 +88,19 @@ export const signup = async ({
     throw new Error('Last name must be 2 characters or longer')
   }
 
-  if (country && country !== 'string') {
+  if (country && typeof country !== 'string') {
     throw new Error('Please select a country')
   }
 
-  if (city && city !== 'string') {
+  if (city && typeof city !== 'string') {
     throw new Error('Please select a city')
   }
 
-  if (avatar && avatar !== 'string') {
+  if (avatar && typeof avatar !== 'string') {
     throw new Error('Please select an avatar')
   }
 
-  if (biography && biography !== 'string') {
+  if (biography && typeof biography !== 'string') {
     throw new Error('Please put your biography')
   }
 
@@ -120,6 +122,8 @@ export const signup = async ({
     age,
     country,
     gender,
+    city,
+    biography,
   })
 
   await user.save()
