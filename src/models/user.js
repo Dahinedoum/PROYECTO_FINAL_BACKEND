@@ -20,15 +20,19 @@ const UserSchema = new mongoose.Schema(
     },
     firstName: {
       type: String,
+      require: true,
     },
     lastName: {
       type: String,
+      require: true,
     },
     age: {
-      type: Date,
+      type: Number,
+      require: true,
     },
     gender: {
       type: String,
+      require: true,
       enum: ['male', 'female', 'non-binary'],
     },
     biography: {
@@ -42,6 +46,7 @@ const UserSchema = new mongoose.Schema(
     },
     country: {
       type: String,
+      require: true,
     },
     createdAt: {
       type: Date,
