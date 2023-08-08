@@ -90,8 +90,21 @@ export const signup = async ({
     throw new Error('Please select a country')
   }
 
-  if (gender && gender !== 'string') {
-    throw new Error('Please select a gender')
+  if (city && city !== 'string') {
+    throw new Error('Please select a city')
+  }
+
+  if (avatar && avatar !== 'string') {
+    throw new Error('Please select an avatar')
+  }
+
+  if (biography && biography !== 'string') {
+    throw new Error('Please put your biography')
+  }
+
+  const validGender = ['male', 'female', 'non-binary']
+  if (gender && !validGender.includes(gender)) {
+    throw new Error('Please select a valid gender')
   }
 
   const saltRounds = 10
