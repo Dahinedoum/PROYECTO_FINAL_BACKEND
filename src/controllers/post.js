@@ -49,7 +49,6 @@ export const getPostById = async (id) => {
  */
 export const createPost = async ({ data, user }) => {
   const {
-    userId,
     mainImage,
     title,
     type,
@@ -60,6 +59,7 @@ export const createPost = async ({ data, user }) => {
     ingredients,
     diners,
     steps,
+    userId,
   } = data
 
   if (!user) {
@@ -134,7 +134,6 @@ export const createPost = async ({ data, user }) => {
  */
 export const updatePostById = async ({ id, data, user }) => {
   const {
-    userId,
     mainImage,
     title,
     type,
@@ -152,15 +151,8 @@ export const updatePostById = async ({ id, data, user }) => {
     throw new Error('Post not found')
   }
 
-  if (
-    post.sellerId.toString() !== user._id.toString() &&
-    user.rol !== 'admin'
-  ) {
-    throw new Error('no tienes permiso')
-  }
-
-  if (userId) {
-    post.userId = userId
+  if (post.userId.toString() !== user._id.toString()) {
+    throw new Error(`You can't edit this post`)
   }
 
   if (mainImage) {
@@ -192,33 +184,27 @@ export const updatePostById = async ({ id, data, user }) => {
   }
 
   const validPostType = ['Salad', 'Dessert', 'Breakfast']
-  if (!validPostType.includes(type)) {
-    throw new Error('This is not valid type')
+  if (type) {
+    if (!validPostType.includes(type)) {
+      throw new Error('This is not valid type')
+    }
+  } else {
+    post.type = type
   }
 
   const validPostDifficulty = ['Easy', 'Moderate', 'Difficult']
-  if (!validPostDifficulty.includes(difficulty)) {
-    throw new Error('This is not valid difficulty')
+  if (difficulty) {
+    if (!validPostDifficulty.includes(difficulty)) {
+      throw new Error('This is not valid difficulty')
+    }
+  } else {
+    post.difficulty = difficulty
   }
 
-  const validPostAllergies = [
-    'Gluten',
-    'Crustaceans',
-    'Eggs',
-    'Fish',
-    'Peanuts',
-    'Soy',
-    'Dairy',
-    'Nuts in shell',
-    'Celery',
-    'Mustard',
-    'Sesame',
-    'Sulphites',
-    'Lupins',
-    'Mollusks',
-  ]
-  if (!validPostAllergies.includes(allergies)) {
-    throw new Error('This is not valid allergie')
+  if (allergies) {
+    validatePostAllergies(allergies)
+
+    post.allergies = allergies
   }
 
   const validPostIngredientsUnity = [
@@ -231,8 +217,12 @@ export const updatePostById = async ({ id, data, user }) => {
     'Tablespoon',
     'Tablespoon dessert',
   ]
-  if (!validPostIngredientsUnity.includes(ingredients.unity)) {
-    throw new Error('This is not valid unity')
+  if (ingredients.unity) {
+    if (!validPostIngredientsUnity.includes(ingredients.unity)) {
+      throw new Error('This is not valid unity')
+    }
+  } else {
+    post.ingredients.unity = ingredients.unity
   }
 
   await post.save()
@@ -243,19 +233,16 @@ export const updatePostById = async ({ id, data, user }) => {
 //Delete post
 /**
  * @param {string} postId
- * @param {string} sellerId
+ * @param {string} userId
  * @param {object} user
  * @param {string} user._id
  * @returns {Promise<boolean>}
  */
-export const deletePostById = async ({ postId }) => {
+export const deletePostById = async ({ postId, user }) => {
   const post = await getPostById(postId)
 
-  if (
-    post.sellerId.toString() !== user._id.toString() &&
-    user.rol !== 'admin'
-  ) {
-    throw new Error('no tienes permiso')
+  if (post.userId.toString() !== user._id.toString()) {
+    throw new Error(`You can't remove this post`)
   }
   await Post.deleteOne({ _id: postId })
 
