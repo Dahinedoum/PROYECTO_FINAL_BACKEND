@@ -228,7 +228,6 @@ router.delete('/:id', async (request, response) => {
   }
 })
 
-
 // Favorite post route
 /**
  * @swagger
