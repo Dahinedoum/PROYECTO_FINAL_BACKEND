@@ -32,7 +32,7 @@ const router = express.Router()
  *          description: the user last name
  *        age:
  *          type: integer
- *          description: birth date of user
+ *          description: age of user
  *        gender:
  *          type: string
  *          description: the gender of the user

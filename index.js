@@ -6,6 +6,8 @@ import swaggerUi from 'swagger-ui-express'
 import swaggerJSDoc from 'swagger-jsdoc'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { ensureAuthenticated } from './src/middleware/auth.js'
+import authRouter from './src/router/auth.js'
 import postsRouter from './src/router/post.js'
 import usersRouter from './src/router/user.js'
 import connectToDb from './src/services/db.js'
@@ -47,7 +49,8 @@ const startApp = async () => {
     swaggerUi.serve,
     swaggerUi.setup(swaggerJSDoc(swaggerSpec))
   )
-
+  app.use(ensureAuthenticated)
+  app.use('/auth', authRouter)
   app.use('/posts', postsRouter)
   app.use('/users', usersRouter)
 
