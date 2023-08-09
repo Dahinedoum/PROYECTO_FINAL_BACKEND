@@ -149,7 +149,7 @@ router.post('/', async (request, response) => {
     const createdPost = await createPost({
       data: {
         ...request.body,
-        sellerId: request.user._id,
+        userId: request.user._id,
       },
       user: request.user,
     })
