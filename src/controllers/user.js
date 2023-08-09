@@ -36,12 +36,10 @@ export const getUserById = async (id) => {
  * @returns {Promise<object>}
  */
 
+//TODO arreglar update
+
 export const updateUserInfoById = async (id, user) => {
   const currentUser = await User.findOne({ _id: id })
-
-  if (!currentUser) {
-    throw new Error('User not found')
-  }
 
   if (currentUser._id.toString() !== user._id.toString()) {
     throw new Error(`You can't edit this profile`)
@@ -111,7 +109,7 @@ export const updateUserInfoById = async (id, user) => {
  */
 
 export const removeUserById = async (id, user) => {
-  if (user._id.toString !== id.toString()) {
+  if (user._id.toString() !== id.toString()) {
     throw new Error(`You don't have permission for this`)
   }
   await User.deleteOne({ _id: id })
