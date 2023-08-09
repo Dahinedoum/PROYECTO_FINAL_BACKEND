@@ -1,5 +1,6 @@
 import Post from '../models/post.js'
 import User from '../models/user.js'
+import { validatePostAllergies } from '../utils/post.js'
 //Get posts
 /**
  * @return {Promise<object[]>}
@@ -42,7 +43,7 @@ export const getPostById = async (id) => {
  * @param {"Easy" | "Moderate" | "Difficult"} data.difficulty
  * @param {"Gluten" | "Crustaceans" | "Eggs" | "Fish" | "Peanuts" | "Soy" | "Dairy" | "Nuts in shell" | "Celery"  | "Mustard" | "Sesame" | "Sulphites" | "Lupins" | "Mollusks"} data.allergies
  * @param {string} data.description
- * @param {{ name: string, quantity: number, unity: "Liter" | "Milliliter" | "Kilograms" | "Grams" | "Pound" | "Ounce" | "Tablespoon" | "Tablespoon dessert" }} data.ingredients
+ * @param {{ name: string, quantity: number, unity: "Liter" | "Milliliters" | "Kilograms" | "Grams" | "Pound" | "Ounce" | "Tablespoon" | "Tablespoon dessert" }} data.ingredients
  * @param {number} data.diners
  * @param {{title: string, description: string, order: number, image: string }} data.steps
  */
@@ -80,26 +81,9 @@ export const createPost = async ({ data, user }) => {
     throw new Error('This is not valid difficulty')
   }
 
-  const validPostAllergies = [
-    'Gluten',
-    'Crustaceans',
-    'Eggs',
-    'Fish',
-    'Peanuts',
-    'Soy',
-    'Dairy',
-    'Nuts in shell',
-    'Celery',
-    'Mustard',
-    'Sesame',
-    'Sulphites',
-    'Lupins',
-    'Mollusks',
-  ]
-
   const validPostIngredientsUnity = [
     'Liter',
-    'Milliliter',
+    'Milliliters',
     'Kilograms',
     'Grams',
     'Pound',
@@ -114,9 +98,7 @@ export const createPost = async ({ data, user }) => {
   }
 
   if (allergies) {
-    if (!validPostAllergies.includes(allergies)) {
-      throw new Error('This is not valid allergie')
-    }
+    validatePostAllergies(allergies)
   }
 
   const post = new Post({
@@ -146,7 +128,7 @@ export const createPost = async ({ data, user }) => {
  * @param {"Easy" | "Moderate" | "Difficult"} data.difficulty
  * @param {"Gluten" | "Crustaceans" | "Eggs" | "Fish" | "Peanuts" | "Soy" | "Dairy" | "Nuts in shell" | "Celery"  | "Mustard" | "Sesame" | "Sulphites" | "Lupins" | "Mollusks"} data.allergies
  * @param {string} data.description
- * @param {{ name: string, quantity: number, unity: "Liter" | "Milliliter" | "Kilograms" | "Grams" | "Pound" | "Ounce" | "Tablespoon" | "Tablespoon dessert" }} data.ingredients
+ * @param {{ name: string, quantity: number, unity: "Liter" | "Milliliters" | "Kilograms" | "Grams" | "Pound" | "Ounce" | "Tablespoon" | "Tablespoon dessert" }} data.ingredients
  * @param {number} data.dinners
  * @param {{title: string, description: string, order: number, image: string }} data.steps
  */
@@ -241,7 +223,7 @@ export const updatePostById = async ({ id, data, user }) => {
 
   const validPostIngredientsUnity = [
     'Liter',
-    'Milliliter',
+    'Milliliters',
     'Kilograms',
     'Grams',
     'Pound',

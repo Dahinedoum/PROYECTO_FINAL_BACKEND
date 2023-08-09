@@ -50,6 +50,7 @@ export const signup = async ({
   gender,
   city,
   biography,
+  avatar,
 }) => {
   if (
     !email ||

@@ -44,11 +44,11 @@ const startApp = async () => {
       extended: true,
     })
   )
-  app.use(
-    '/api-doc',
-    swaggerUi.serve,
-    swaggerUi.setup(swaggerJSDoc(swaggerSpec))
-  )
+  // app.use(
+  //   '/api-doc',
+  //   swaggerUi.serve,
+  //   swaggerUi.setup(swaggerJSDoc(swaggerSpec))
+  // )
   app.use(ensureAuthenticated)
   app.use('/auth', authRouter)
   app.use('/posts', postsRouter)

@@ -2,10 +2,12 @@ import mongoose from 'mongoose'
 const UserPostLikeSchema = new mongoose.Schema(
   {
     postId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Post',
     },
     userId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
     },
     createdAt: {
       type: Date,
