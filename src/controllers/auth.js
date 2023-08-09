@@ -125,6 +125,7 @@ export const signup = async ({
     gender,
     city,
     biography,
+    avatar,
   })
 
   await user.save()
