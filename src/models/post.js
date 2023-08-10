@@ -2,6 +2,11 @@ import mongoose from 'mongoose'
 
 const PostSchema = new mongoose.Schema(
   {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      require: true,
+    },
     mainImage: {
       type: String,
     },
@@ -90,11 +95,6 @@ const PostSchema = new mongoose.Schema(
         ],
       },
     ],
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      require: true,
-    },
     createdAt: {
       type: Date,
       require: true,

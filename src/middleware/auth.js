@@ -20,7 +20,7 @@ export const ensureAuthenticated = async (request, response, next) => {
       return response.status(403).send({ message: 'Wrong token' })
     }
 
-    const user = await User.findOne({ _id: payload.id }).populate('favPosts')
+    const user = await User.findOne({ _id: payload.id })
 
     if (!user) {
       return response.status(403).send({ message: 'Wrong token' })

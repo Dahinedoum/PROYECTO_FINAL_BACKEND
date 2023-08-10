@@ -272,7 +272,7 @@ export const togglePostFavByUser = async (postId, user) => {
 
   let newFavList = []
   if (!existedFav) {
-    newFavList = [...currentFavs, postId]
+    newFavList = [...currentFavs, post]
   } else {
     newFavList = currentFavs.filter(
       (currentId) => currentId.toString() !== postId.toString()
