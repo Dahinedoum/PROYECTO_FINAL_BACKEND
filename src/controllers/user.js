@@ -41,8 +41,14 @@ export const getUserById = async (id) => {
 export const updateUserInfoById = async (id, user) => {
   const currentUser = await User.findOne({ _id: id })
 
-  if (currentUser._id.toString() !== user._id.toString()) {
-    throw new Error(`You can't edit this profile`)
+  if (!currentUser) {
+    throw new Error('User not found');
+  }
+
+  if (user && user._id) {
+    if (currentUser._id.toString() !== user._id.toString()) {
+      throw new Error(`You can't edit this profile`);
+    }
   }
 
   if (user.email) {
