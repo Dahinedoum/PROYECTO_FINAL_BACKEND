@@ -12,7 +12,10 @@ export const getPosts = async (filters) => {
       filtersData.type = filters.type
     }
   }
-  return Post.find(filtersData)
+  return Post.find(filtersData).populate({
+    path: 'likes',
+    select: '_id',
+  })
 }
 
 //Get post by id
@@ -21,7 +24,10 @@ export const getPosts = async (filters) => {
  * @return {Promise<object>}
  */
 export const getPostById = async (id) => {
-  const post = await Post.findOne({ _id: id })
+  const post = await Post.findOne({ _id: id }).populate({
+    path: 'likes',
+    select: '_id',
+  })
 
   if (!post) {
     throw new Error('Post not found')
@@ -279,4 +285,50 @@ export const togglePostFavByUser = async (postId, user) => {
     )
   }
   await User.updateOne({ _id: user._id }, { favPosts: newFavList })
+}
+
+//Like post controller
+/**
+ * @param {string} postId
+ * @param {object} user
+ * @param {object[]} user.likePosts
+ * @param {object[]} post.likes
+ */
+export const togglePostLikeByUser = async (postId, user) => {
+  if (!postId) {
+    throw new Error('postId is required')
+  }
+
+  if (!user) {
+    throw new Error('You must be registered')
+  }
+
+  const post = await Post.findById(postId)
+  if (!post) {
+    throw new Error('Post not found')
+  }
+
+  const likedByUser = post.likes.includes(user._id)
+
+  // Likes del post
+  if (!likedByUser) {
+    post.likes.push(user._id)
+  } else {
+    post.likes = post.likes.filter(
+      (userId) => userId.toString() !== user._id.toString()
+    )
+  }
+
+  await post.save()
+
+  // Likes del user
+  if (!likedByUser) {
+    user.likePosts.push(post._id)
+  } else {
+    user.likePosts = user.likePosts.filter(
+      (postId) => postId.toString() !== post._id.toString()
+    )
+  }
+
+  await user.save()
 }
