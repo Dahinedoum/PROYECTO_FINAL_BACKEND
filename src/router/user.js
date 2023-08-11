@@ -179,12 +179,12 @@ router.get('/:id', async (request, response) => {
  *        description: user not found
  */
 
-router.put('/:id', async (request, response) => {
+router.put('/', async (request, response) => {
   try {
-    const updatedUser = await updateUserInfoById(
-      request.params.id,
-      request.body
-    )
+    const updatedUser = await updateUserInfoById({
+      user: request.user,
+      data: request.body,
+    })
     response.json({ updatedUser })
   } catch (error) {
     response.status(500).json(error.message)

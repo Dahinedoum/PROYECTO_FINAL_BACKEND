@@ -38,41 +38,39 @@ export const getUserById = async (id) => {
 
 //TODO arreglar update
 
-export const updateUserInfoById = async (id, user) => {
-  const currentUser = await User.findOne({ _id: id })
+export const updateUserInfoById = async ({ user, data }) => {
+  if (data.email) {
+    const existedEmail = await User.findOne({
+      email: data.email,
+      _id: { $not: user._id },
+    })
 
-  if (!currentUser) {
-    throw new Error('User not found');
-  }
-
-  if (user && user._id) {
-    if (currentUser._id.toString() !== user._id.toString()) {
-      throw new Error(`You can't edit this profile`);
+    if (existedEmail) {
+      throw new error('this email is in use')
     }
+
+    user.email = data.email
   }
 
-  if (user.email) {
-    currentUser.email = user.email
+  // TODO investigar como se hacer un reset password
+  // if (data.password) {
+  //   currentUser.password = user.password
+  // }
+
+  if (data.username) {
+    user.username = data.username
   }
 
-  if (user.password) {
-    currentUser.password = user.password
+  if (data.firstName) {
+    user.firstName = data.firstName
   }
 
-  if (user.username) {
-    currentUser.username = user.username
+  if (data.lastName) {
+    user.lastName = data.lastName
   }
 
-  if (user.firstName) {
-    currentUser.firstName = user.firstName
-  }
-
-  if (user.lastName) {
-    currentUser.lastName = user.lastName
-  }
-
-  if (user.age) {
-    currentUser.age = user.age
+  if (data.age) {
+    user.age = data.age
   }
 
   const validUserGender = ['male', 'female', 'non-binary']
