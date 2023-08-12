@@ -7,6 +7,7 @@ import {
   deletePostById,
   togglePostFavByUser,
   togglePostLikeByUser,
+  createPostCommentByUser,
 } from '../controllers/post.js'
 
 const router = express.Router()
@@ -261,6 +262,19 @@ router.post('/:id/favs', async (request, response) => {
 router.post('/:id/likes', async (request, response) => {
   try {
     await togglePostLikeByUser(request.params.id, request.user)
+    response.json(true)
+  } catch (error) {
+    response.status(500).json(error.message)
+  }
+})
+
+router.post('/:postId/comments', async (request, response) => {
+  try {
+    await createPostCommentByUser({
+      postId: request.params.postId,
+      data: request.body,
+      user: request.user,
+    })
     response.json(true)
   } catch (error) {
     response.status(500).json(error.message)

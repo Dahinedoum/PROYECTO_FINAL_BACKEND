@@ -1,7 +1,9 @@
 import Post from '../models/post.js'
 import User from '../models/user.js'
 import UserPostLike from '../models/user_post_like.js'
+import UserPostComment from '../models/user_post_comment.js'
 import { validatePostAllergies } from '../utils/post.js'
+
 //Get posts
 /**
  * @return {Promise<object[]>}
@@ -28,6 +30,9 @@ export const getPostById = async (id) => {
     throw new Error('Post not found')
   }
 
+  const postComments = await UserPostComment.find({
+    postId: post._id,
+  })
   const likes = await UserPostLike.find({ postId: post._id }).select('userId')
 
   const likedBy = likes.map((like) => like.userId)
@@ -35,6 +40,7 @@ export const getPostById = async (id) => {
   return {
     ...post.toObject(),
     likedBy: likedBy,
+    comments: postComments,
   }
 }
 
@@ -320,4 +326,29 @@ export const togglePostLikeByUser = async (postId, user) => {
     })
     await postLike.save()
   }
+}
+
+// Create comment controller
+/**
+ *
+ * @param {string} postId
+ * @param {object} data
+ * @param {string} data.comment
+ * @param {object} user
+ * @param {string} user._id
+ */
+
+export const createPostCommentByUser = async ({ postId, data, user }) => {
+  if (!data.comment) {
+    throw new Error('Missing comment')
+  }
+
+  const post = await getPostById(postId)
+  const postComment = new UserPostComment({
+    postId: post._id,
+    userId: user._id,
+    comment: data.comment,
+  })
+
+  await postComment.save()
 }
