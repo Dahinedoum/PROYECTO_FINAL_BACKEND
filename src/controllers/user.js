@@ -51,7 +51,6 @@ export const updateUserInfo = async ({ user, data }) => {
     user.email = data.email
   }
 
-  // TODO investigar como se hacer un reset password
   if (data.password) {
     const saltRounds = 10
     const salt = await bcrypt.genSalt(saltRounds)
