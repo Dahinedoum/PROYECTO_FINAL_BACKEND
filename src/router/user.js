@@ -3,6 +3,7 @@ import {
   getAllUsers,
   getUserById,
   removeUserById,
+  toggleFollowingByUser,
   updateUserInfo,
 } from '../controllers/user.js'
 
@@ -220,4 +221,12 @@ router.delete('/:id', async (request, response) => {
   }
 })
 
+router.post('/:id/follow', async (request, response) => {
+  try {
+    await toggleFollowingByUser(request.params.id, request.user)
+    response.json(true)
+  } catch (error) {
+    response.status(500).json(error.message)
+  }
+})
 export default router

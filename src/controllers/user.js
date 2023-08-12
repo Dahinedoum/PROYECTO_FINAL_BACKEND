@@ -21,7 +21,9 @@ export const getAllUsers = async (user) => {
  */
 
 export const getUserById = async (id) => {
-  const user = await User.findOne({ _id: id }).populate('favPosts')
+  const user = await User.findOne({ _id: id })
+    .populate('favPosts')
+    .populate('following')
 
   if (!user) {
     throw new Error('User not found')
@@ -128,4 +130,41 @@ export const removeUserById = async (id, user) => {
   await User.deleteOne({ _id: id })
 
   return true
+}
+
+// Following controller
+
+/**
+ *
+ * @param {string} userId
+ * @param {object} user
+ * @param {object[]} user.following
+ */
+
+export const toggleFollowingByUser = async (userId, user) => {
+  if (!userId) {
+    throw new Error('Id is required')
+  }
+
+  if (!user) {
+    throw new Error('You need to have an account')
+  }
+
+  const followingUser = await getUserById(userId)
+
+  const currentFollowingUsers = user.following || []
+  const existingFollowingUser = currentFollowingUsers.find(
+    (currentId) => currentId.toString() === userId.toString()
+  )
+
+  let newFollowingList = []
+  if (!existingFollowingUser) {
+    newFollowingList = [...currentFollowingUsers, followingUser]
+  } else {
+    newFollowingList = currentFollowingUsers.filter(
+      (currentId) => currentId.toString() !== userId.toString()
+    )
+  }
+
+  await User.updateOne({ _id: user._id }, { following: newFollowingList })
 }
