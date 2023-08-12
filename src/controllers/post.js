@@ -1,5 +1,6 @@
 import Post from '../models/post.js'
 import User from '../models/user.js'
+import UserPostLike from '../models/user_post_like.js'
 import { validatePostAllergies } from '../utils/post.js'
 //Get posts
 /**
@@ -12,10 +13,7 @@ export const getPosts = async (filters) => {
       filtersData.type = filters.type
     }
   }
-  return Post.find(filtersData).populate({
-    path: 'likes',
-    select: '_id',
-  })
+  return Post.find(filtersData)
 }
 
 //Get post by id
@@ -24,17 +22,19 @@ export const getPosts = async (filters) => {
  * @return {Promise<object>}
  */
 export const getPostById = async (id) => {
-  const post = await Post.findOne({ _id: id }).populate({
-    path: 'likes',
-    select: '_id',
-  })
+  const post = await Post.findOne({ _id: id })
 
   if (!post) {
     throw new Error('Post not found')
   }
 
+  const likes = await UserPostLike.find({ postId: post._id }).select('userId')
+
+  const likedBy = likes.map((like) => like.userId)
+
   return {
     ...post.toObject(),
+    likedBy: likedBy,
   }
 }
 
@@ -308,27 +308,16 @@ export const togglePostLikeByUser = async (postId, user) => {
     throw new Error('Post not found')
   }
 
-  const likedByUser = post.likes.includes(user._id)
+  const existingLike = await UserPostLike.findOneAndDelete({
+    postId: post._id,
+    userId: user._id,
+  })
 
-  // Likes del post
-  if (!likedByUser) {
-    post.likes.push(user._id)
-  } else {
-    post.likes = post.likes.filter(
-      (userId) => userId.toString() !== user._id.toString()
-    )
+  if (!existingLike) {
+    const postLike = new UserPostLike({
+      postId: post._id,
+      userId: user._id,
+    })
+    await postLike.save()
   }
-
-  await post.save()
-
-  // Likes del user
-  if (!likedByUser) {
-    user.likePosts.push(post._id)
-  } else {
-    user.likePosts = user.likePosts.filter(
-      (postId) => postId.toString() !== post._id.toString()
-    )
-  }
-
-  await user.save()
 }
