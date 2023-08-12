@@ -1,4 +1,5 @@
 import User from '../models/user.js'
+import bcrypt from 'bcrypt'
 
 /**
  * @param {object} user
@@ -36,9 +37,7 @@ export const getUserById = async (id) => {
  * @returns {Promise<object>}
  */
 
-//TODO arreglar update
-
-export const updateUserInfoById = async ({ user, data }) => {
+export const updateUserInfo = async ({ user, data }) => {
   if (data.email) {
     const existedEmail = await User.findOne({
       email: data.email,
@@ -53,9 +52,20 @@ export const updateUserInfoById = async ({ user, data }) => {
   }
 
   // TODO investigar como se hacer un reset password
-  // if (data.password) {
-  //   currentUser.password = user.password
-  // }
+  if (data.password) {
+    const saltRounds = 10
+    const salt = await bcrypt.genSalt(saltRounds)
+
+    const hashedPassword = await bcrypt.hash(data.password, salt)
+
+    const existingPassword = await bcrypt.compare(data.password, user.password)
+
+    if (existingPassword) {
+      throw new Error(`The password can't be the same as before`)
+    }
+
+    user.password = hashedPassword
+  }
 
   if (data.username) {
     user.username = data.username
@@ -74,35 +84,35 @@ export const updateUserInfoById = async ({ user, data }) => {
   }
 
   const validUserGender = ['male', 'female', 'non-binary']
-  if (user.gender && !validUserGender.includes(user.gender)) {
+  if (data.gender && !validUserGender.includes(data.gender)) {
     throw new Error(
       `You need to type one of the following genders: ${validUserGender.join(
         ','
       )}`
     )
   } else {
-    currentUser.gender = user.gender
+    user.gender = data.gender
   }
 
-  if (user.biography) {
-    currentUser.biography = user.biography
+  if (data.biography) {
+    user.biography = data.biography
   }
 
-  if (user.avatar) {
-    currentUser.avatar = user.avatar
+  if (data.avatar) {
+    user.avatar = data.avatar
   }
 
-  if (user.city) {
-    currentUser.city = user.city
+  if (data.city) {
+    user.city = data.city
   }
 
-  if (user.country) {
-    currentUser.country = user.country
+  if (data.country) {
+    user.country = data.country
   }
 
-  await currentUser.save()
+  await user.save()
 
-  return currentUser
+  return user
 }
 
 /**

@@ -3,7 +3,7 @@ import {
   getAllUsers,
   getUserById,
   removeUserById,
-  updateUserInfoById,
+  updateUserInfo,
 } from '../controllers/user.js'
 
 const router = express.Router()
@@ -154,7 +154,7 @@ router.get('/:id', async (request, response) => {
 
 /**
  * @swagger
- * /users/{id}:
+ * /users/me:
  *  put:
  *    summary: update a user
  *    tags: [User]
@@ -179,9 +179,9 @@ router.get('/:id', async (request, response) => {
  *        description: user not found
  */
 
-router.put('/', async (request, response) => {
+router.put('/me', async (request, response) => {
   try {
-    const updatedUser = await updateUserInfoById({
+    const updatedUser = await updateUserInfo({
       user: request.user,
       data: request.body,
     })
