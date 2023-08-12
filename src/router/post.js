@@ -8,6 +8,7 @@ import {
   togglePostFavByUser,
   togglePostLikeByUser,
   createPostCommentByUser,
+  deletePostCommentByUser,
 } from '../controllers/post.js'
 
 const router = express.Router()
@@ -277,6 +278,19 @@ router.post('/:postId/comments', async (request, response) => {
     })
     response.json(true)
   } catch (error) {
+    response.status(500).json(error.message)
+  }
+})
+
+router.delete('/comments/:commentId', async (request, response) => {
+  try {
+    await deletePostCommentByUser({
+      commentId: request.params.commentId,
+      user: request.user,
+    })
+    response.json(true)
+  } catch (error) {
+    console.log(error)
     response.status(500).json(error.message)
   }
 })

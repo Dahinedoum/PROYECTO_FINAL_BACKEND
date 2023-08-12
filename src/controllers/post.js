@@ -352,3 +352,29 @@ export const createPostCommentByUser = async ({ postId, data, user }) => {
 
   await postComment.save()
 }
+
+/**
+ *
+ * @param {string} commentId
+ * @param {object} user
+ * @param {string} user._id
+ * @returns {Promise<boolean>}
+ */
+
+export const deletePostCommentByUser = async ({ commentId, user }) => {
+  const comment = await UserPostComment.findOne({ _id: commentId })
+  if (!comment) {
+    throw new Error('Comment not found')
+  }
+
+  if (comment.userId.toString() !== user._id.toString()) {
+    throw new Error('This comment can only be deleted by its author')
+  }
+
+  await UserPostComment.deleteOne({
+    _id: commentId,
+    userId: user._id,
+  })
+
+  return true
+}
