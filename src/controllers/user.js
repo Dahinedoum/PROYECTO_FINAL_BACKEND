@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt'
 import User from '../models/user.js'
+import UserPostLike from '../models/user_post_like.js'
 
 /**
  * @param {object} user
@@ -28,8 +29,14 @@ export const getUserById = async (id) => {
   if (!user) {
     throw new Error('User not found')
   }
+  const likes = await UserPostLike.find({ userId: user._id }).select('postId')
 
-  return user
+  const likePosts = likes.map((like) => like.postId)
+
+  return {
+    ...user.toObject(),
+    likePosts: likePosts,
+  }
 }
 
 /**
