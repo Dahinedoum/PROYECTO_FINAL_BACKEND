@@ -5,6 +5,7 @@ import {
   removeUserById,
   toggleFollowingByUser,
   updateUserInfo,
+  getFollowersByUser,
 } from '../controllers/user.js'
 
 const router = express.Router()
@@ -229,4 +230,45 @@ router.post('/:id/follow', async (request, response) => {
     response.status(500).json(error.message)
   }
 })
+
+//Followers
+
+/**
+ * @swagger
+ * /users/{id}/followers:
+ *  get:
+ *    summary: get followers of a user
+ *    tags: [User]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: the user id
+ *    responses:
+ *      200:
+ *        description: list of user followers
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                followers:
+ *                  type: array
+ *                  items:
+ *                    $ref: '#/components/schemas/User'
+ *      404:
+ *        description: user not found
+ */
+
+router.get('/:id/followers', async (request, response) => {
+  try {
+    const followers = await getFollowersByUser(request.params.id)
+    response.json({ followers })
+  } catch (error) {
+    response.status(500).json(error.message)
+  }
+})
+
 export default router
