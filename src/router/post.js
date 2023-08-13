@@ -9,6 +9,7 @@ import {
   togglePostLikeByUser,
   createPostCommentByUser,
   deletePostCommentByUser,
+  toggleSharePost,
 } from '../controllers/post.js'
 
 const router = express.Router()
@@ -294,5 +295,15 @@ router.delete('/comments/:commentId', async (request, response) => {
     response.status(500).json(error.message)
   }
 })
+
+router.post('/:id/share', async (request, response) => {
+  try {
+    await toggleSharePost(request.params.id, request.user)
+    response.json(true)
+  } catch (error) {
+    response.status(500).json(error.message)
+  }
+})
+
 
 export default router

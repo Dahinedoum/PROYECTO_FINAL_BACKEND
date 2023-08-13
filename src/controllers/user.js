@@ -20,11 +20,11 @@ export const getAllUsers = async (user) => {
  * @param {string} id
  * @returns {Promise<object>}
  */
-
 export const getUserById = async (id) => {
   const user = await User.findOne({ _id: id })
     .populate('favPosts')
     .populate('following')
+    .populate('sharedPosts')
 
   if (!user) {
     throw new Error('User not found')
