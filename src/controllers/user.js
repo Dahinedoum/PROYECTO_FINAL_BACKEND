@@ -33,9 +33,12 @@ export const getUserById = async (id) => {
 
   const likePosts = likes.map((like) => like.postId)
 
+  const followers = await getFollowersByUser(user._id)
+
   return {
     ...user.toObject(),
     likePosts: likePosts,
+    followers: followers,
   }
 }
 
@@ -139,6 +142,19 @@ export const removeUserById = async (id, user) => {
   return true
 }
 
+//Followers controller
+
+/**
+ *
+ * @param {string} userId
+ * @returns {Promise<object[]>}
+ */
+
+export const getFollowersByUser = async (userId) => {
+  const followers = await User.find({ following: userId })
+  return followers
+}
+
 // Following controller
 
 /**
@@ -160,18 +176,24 @@ export const toggleFollowingByUser = async (userId, user) => {
   const followingUser = await getUserById(userId)
 
   const currentFollowingUsers = user.following || []
-  const existingFollowingUser = currentFollowingUsers.find(
+
+  //checkin if the user is already followed
+
+  const isAlreadyFollowing  = currentFollowingUsers.some(
     (currentId) => currentId.toString() === userId.toString()
   )
 
   let newFollowingList = []
-  if (!existingFollowingUser) {
-    newFollowingList = [...currentFollowingUsers, followingUser]
+
+  if (!isAlreadyFollowing ) {
+    //Adding the new user to the following list
+    newFollowingList = [...currentFollowingUsers, followingUser._id]
   } else {
+    //Removing the user from the following list
     newFollowingList = currentFollowingUsers.filter(
       (currentId) => currentId.toString() !== userId.toString()
     )
   }
-
+    
   await User.updateOne({ _id: user._id }, { following: newFollowingList })
 }
