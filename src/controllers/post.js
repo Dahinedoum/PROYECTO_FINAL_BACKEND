@@ -2,6 +2,7 @@ import Post from '../models/post.js'
 import User from '../models/user.js'
 import UserPostLike from '../models/user_post_like.js'
 import UserPostComment from '../models/user_post_comment.js'
+
 import { validatePostAllergies } from '../utils/post.js'
 
 //Get posts
@@ -34,11 +35,12 @@ export const getPostById = async (id) => {
     postId: post._id,
   })
   const likes = await UserPostLike.find({ postId: post._id }).select('userId')
-
+  const numberOfLikes = likes.length
   const likedBy = likes.map((like) => like.userId)
 
   return {
     ...post.toObject(),
+    likes: numberOfLikes,
     likedBy: likedBy,
     comments: postComments,
   }
@@ -377,4 +379,36 @@ export const deletePostCommentByUser = async ({ commentId, user }) => {
   })
 
   return true
+}
+
+/**
+ * @param {string} postId
+ * @param {object} user
+ * @param {string} userId
+ * @param {object[]} user.sharedPosts
+ */
+export const toggleSharePost = async (postId, user) => {
+  if (!postId) {
+    throw new Error('id is required')
+  }
+
+  if (!user) {
+    throw new Error('you must be registred')
+  }
+
+  const post = await getPostById(postId)
+  const currentShares = user.sharedPosts || []
+  const existedSharePost = currentShares.find(
+    (currentId) => currentId.toString() === postId.toString()
+  )
+
+  let newSharedList = []
+  if (!existedSharePost) {
+    newSharedList = [...currentShares, post]
+  } else {
+    newSharedList = currentShares.filter(
+      (currentId) => currentId.toString() !== postId.toString()
+    )
+  }
+  await User.updateOne({ _id: user._id }, { sharedPosts: newSharedList })
 }
