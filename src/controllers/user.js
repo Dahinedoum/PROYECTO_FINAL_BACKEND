@@ -161,6 +161,7 @@ export const getFollowersByUser = async (userId) => {
  *
  * @param {string} userId
  * @param {object} user
+ * @param {string} user._id
  * @param {object[]} user.following
  */
 
@@ -179,21 +180,26 @@ export const toggleFollowingByUser = async (userId, user) => {
 
   //checkin if the user is already followed
 
-  const isAlreadyFollowing  = currentFollowingUsers.some(
+  const isAlreadyFollowing = currentFollowingUsers.find(
     (currentId) => currentId.toString() === userId.toString()
   )
 
   let newFollowingList = []
 
-  if (!isAlreadyFollowing ) {
-    //Adding the new user to the following list
+  if (!isAlreadyFollowing) {
+    //Adding the new user to the following/follower list
     newFollowingList = [...currentFollowingUsers, followingUser._id]
+    await User.updateOne(
+      { _id: userId },
+      { $addToSet: { followers: user._id } }
+    )
   } else {
-    //Removing the user from the following list
+    //Removing the user from the following/follower list
     newFollowingList = currentFollowingUsers.filter(
       (currentId) => currentId.toString() !== userId.toString()
     )
+    await User.updateOne({ _id: userId }, { $pull: { followers: user._id } })
   }
-    
+
   await User.updateOne({ _id: user._id }, { following: newFollowingList })
 }
