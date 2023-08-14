@@ -339,7 +339,6 @@ export const togglePostLikeByUser = async (postId, user) => {
  * @param {object} user
  * @param {string} user._id
  */
-
 export const createPostCommentByUser = async ({ postId, data, user }) => {
   if (!data.comment) {
     throw new Error('Missing comment')
@@ -362,7 +361,6 @@ export const createPostCommentByUser = async ({ postId, data, user }) => {
  * @param {string} user._id
  * @returns {Promise<boolean>}
  */
-
 export const deletePostCommentByUser = async ({ commentId, user }) => {
   const comment = await UserPostComment.findOne({ _id: commentId })
   if (!comment) {
@@ -411,4 +409,33 @@ export const toggleSharePost = async (postId, user) => {
     )
   }
   await User.updateOne({ _id: user._id }, { sharedPosts: newSharedList })
+}
+
+/**
+ * @param {string} postId
+ * @param {object} data
+ * @param {string} data.comment
+ * @param {object} user
+ * @param {string} user._id
+ * @param {string} comment._id
+ */
+export const replyToComment = async ({ postId, commentId, data, user }) => {
+  if (!data.comment) {
+    throw new Error('Missing reply')
+  }
+
+  const parentComment = await UserPostComment.findById(commentId)
+  if (!parentComment) {
+    throw new Error('Parent comment not found')
+  }
+
+  const post = await getPostById(postId)
+  const replyComment = new UserPostComment({
+    postId: post._id,
+    userId: user._id,
+    comment: data.comment,
+    replyTo: parentComment._id,
+  })
+
+  await replyComment.save()
 }
