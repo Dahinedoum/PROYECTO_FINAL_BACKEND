@@ -10,6 +10,7 @@ import {
   createPostCommentByUser,
   deletePostCommentByUser,
   toggleSharePost,
+  replyToComment,
 } from '../controllers/post.js'
 
 const router = express.Router()
@@ -302,6 +303,21 @@ router.post('/:id/share', async (request, response) => {
     response.json(true)
   } catch (error) {
     response.status(500).json(error.message)
+  }
+})
+
+
+router.post('/:postId/comments/:commentId/reply', async (req, res) => {
+  try {
+    await replyToComment({
+      postId: req.params.postId,
+      commentId: req.params.commentId,
+      data: req.body,
+      user: req.user,
+    })
+    res.json(true)
+  } catch (error) {
+    res.status(500).json(error.message)
   }
 })
 
