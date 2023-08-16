@@ -36,6 +36,7 @@ dotenv.config()
 const startApp = async () => {
   const app = express()
   const port = process.env.PORT
+
   app.use(cors())
 
   app.use(bodyParser.json())
@@ -44,11 +45,13 @@ const startApp = async () => {
       extended: true,
     })
   )
-  // app.use(
-  //   '/api-doc',
-  //   swaggerUi.serve,
-  //   swaggerUi.setup(swaggerJSDoc(swaggerSpec))
-  // )
+
+  app.use(
+    '/api-doc',
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerJSDoc(swaggerSpec))
+  )
+
   app.use(ensureAuthenticated)
   app.use('/auth', authRouter)
   app.use('/posts', postsRouter)

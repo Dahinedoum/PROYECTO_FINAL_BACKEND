@@ -222,6 +222,26 @@ router.delete('/:id', async (request, response) => {
   }
 })
 
+/**
+ * @swagger
+ * /users/{id}/follow:
+ *  post:
+ *    summary: follow an user
+ *    tags: [User]
+ *    parameters:
+ *      - in: id
+ *        name: path
+ *        description: id of the user to follow
+ *        required: true
+ *        schema:
+ *          type: string
+ *    responses:
+ *      200:
+ *        description: following toggled successfully
+ *      404:
+ *        description: user not found
+ */
+
 router.post('/:id/follow', async (request, response) => {
   try {
     await toggleFollowingByUser(request.params.id, request.user)
@@ -270,5 +290,14 @@ router.get('/:id/followers', async (request, response) => {
     response.status(500).json(error.message)
   }
 })
+
+// router.get('/:id/following', async (request, response) => {
+//   try {
+//     const following = await getFollowersByUser(request.params.id)
+//     response.json({ following })
+//   } catch (error) {
+//     response.status(500).json(error.message)
+//   }
+// })
 
 export default router

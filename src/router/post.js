@@ -14,6 +14,7 @@ import {
 } from '../controllers/post.js'
 
 const router = express.Router()
+
 /**
  * @swagger
  * components:
@@ -48,28 +49,28 @@ const router = express.Router()
  *        steps:
  *          type: string
  *          description: steps to follow
- *        required:
- *          -title
- *          -type
- *          -duration
- *          -ingredients
- *          -steps
- *        example:
- *          title: potato omelette
- *          type: salad
- *          duration: 15 minuts
- *          difficulty: easy
- *          allergies: eggs
- *          description: The potato omelette is an omelet to which previously cut and chopped potatoes are added, which is considered the typical dish of Spanish gastronomy, found in any restaurant in the country.
- *          ingredients: eggs, potato
- *          diners: 2 - 3
- *          steps:
- *              title: step 1
- *              description: beat 2 - 3 eggs
- *              title: step 2
- *              description: cut potatoes and mix with the egg
- *  *           title: step 3
- *              description: put everything in the pan
+ *      required:
+ *        - title
+ *        - type
+ *        - duration
+ *        - ingredients
+ *        - steps
+ *      example:
+ *        title: potato omelette
+ *        type: salad
+ *        duration: 15 minuts
+ *        difficulty: easy
+ *        allergies: eggs
+ *        description: The potato omelette is an omelet to which previously cut and chopped potatoes are added, which is considered the typical dish of Spanish gastronomy, found in any restaurant in the country.
+ *        ingredients: eggs, potato
+ *        diners: 2 - 3
+ *        steps:
+ *          title: step 1
+ *          description: beat 2 - 3 eggs
+ *          title: step 2
+ *          description: cut potatoes and mix with the egg
+ *          title: step 3
+ *          description: put everything in the pan
  */
 
 // Get posts
@@ -77,16 +78,16 @@ const router = express.Router()
  * @swagger
  * /posts:
  * get:
- *  suamary: get all posts
- *  tags: [Posts]
- *  responses:
- *      200:
- *        description: all posts
- *        content:
- *          application/json:
- *            schema:
- *              type: object
- *              $ref: '#/components/schemas/Post' *
+ *   summary: get all posts
+ *   tags: [Posts]
+ *   responses:
+ *     200:
+ *       description: all posts
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             $ref: '#/components/schemas/Post'
  */
 router.get('/', async (request, response) => {
   try {
@@ -241,8 +242,8 @@ router.delete('/:id', async (request, response) => {
  *    summary: favorite status of a post by user
  *    tags: [Post]
  *    parameters:
- *      - name: id
- *        in: path
+ *      - in: id
+ *        name: path
  *        description: id of the post to add favorite status
  *        required: true
  *        schema:
@@ -306,7 +307,6 @@ router.post('/:id/share', async (request, response) => {
   }
 })
 
-
 router.post('/:postId/comments/:commentId/reply', async (req, res) => {
   try {
     await replyToComment({
@@ -320,6 +320,5 @@ router.post('/:postId/comments/:commentId/reply', async (req, res) => {
     res.status(500).json(error.message)
   }
 })
-
 
 export default router
