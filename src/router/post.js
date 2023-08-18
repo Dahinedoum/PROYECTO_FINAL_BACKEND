@@ -86,7 +86,7 @@ const router = express.Router()
  *   security:
  *      - BearerAuth: []
  *   summary: get all posts
- *   tags: [Posts]
+ *   tags: [Post]
  *   responses:
  *     200:
  *       description: all posts
@@ -112,7 +112,7 @@ router.get('/', async (request, response) => {
  *  get:
  *    security:
  *      - BearerAuth: []
- *    summary: return post
+ *    summary: return post by id
  *    tags: [Post]
  *    parameters:
  *      - in: path
@@ -367,7 +367,7 @@ router.post('/:postId/comments', async (request, response) => {
  *  delete:
  *    security:
  *      - BearerAuth: []
- *    summary: create comment on post
+ *    summary: delete a  comment from post
  *    tags: [Post]
  *    parameters:
  *      - in: path
@@ -385,7 +385,7 @@ router.post('/:postId/comments', async (request, response) => {
  *            $ref: '#/components/schemas/UserPostComment'
  *    responses:
  *      200:
- *        description: updated post
+ *        description: deleted comment
  *      404:
  *        description: post not found
  */
