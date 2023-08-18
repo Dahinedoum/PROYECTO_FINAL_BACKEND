@@ -82,7 +82,7 @@ const router = express.Router()
 /**
  * @swagger
  * /posts:
- * get:
+ *  get:
  *   security:
  *      - BearerAuth: []
  *   summary: get all posts
