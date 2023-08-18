@@ -35,10 +35,13 @@ export const getUserById = async (id) => {
 
   const followers = await getFollowersByUser(user._id)
 
+  const following = await getFollowingUsers(user._id)
+
   return {
     ...user.toObject(),
     likePosts: likePosts,
     followers: followers,
+    following: following,
   }
 }
 
@@ -202,4 +205,22 @@ export const toggleFollowingByUser = async (userId, user) => {
   }
 
   await User.updateOne({ _id: user._id }, { following: newFollowingList })
+}
+
+export const getFollowingUsers = async (userId) => {
+  if (!userId) {
+    throw new Error('User ID is required')
+  }
+
+  try {
+    const user = await User.findOne({ _id: userId })
+
+    if (!user) {
+      throw new Error('User not found')
+    }
+
+    return user.following
+  } catch (error) {
+    throw new Error('Error fetching following list: ' + error.message)
+  }
 }

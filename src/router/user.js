@@ -6,6 +6,7 @@ import {
   toggleFollowingByUser,
   updateUserInfo,
   getFollowersByUser,
+  getFollowingUsers,
 } from '../controllers/user.js'
 
 const router = express.Router()
@@ -13,6 +14,11 @@ const router = express.Router()
 /**
  * @swagger
  * components:
+ *  securitySchemes:
+ *     BearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
  *  schemas:
  *    User:
  *      type: object
@@ -69,12 +75,12 @@ const router = express.Router()
  *
  */
 
-//TODO añadir cabeceras para el token
-
 /**
  * @swagger
  * /users:
  *  get:
+ *    security:
+ *      - BearerAuth: []
  *    summary: return all users
  *    tags: [User]
  *    responses:
@@ -100,6 +106,8 @@ router.get('/', async (request, response) => {
  * @swagger
  * /users/me:
  *  get:
+ *    security:
+ *      - BearerAuth: []
  *    summary: return the current user
  *    tags: [User]
  *    responses:
@@ -124,6 +132,8 @@ router.get('/me', async (request, response) => {
  * @swagger
  * /users/{id}:
  *  get:
+ *    security:
+ *      - BearerAuth: []
  *    summary: return a user
  *    tags: [User]
  *    parameters:
@@ -158,6 +168,8 @@ router.get('/:id', async (request, response) => {
  * @swagger
  * /users/me:
  *  put:
+ *    security:
+ *      - BearerAuth: []
  *    summary: update a user
  *    tags: [User]
  *    parameters:
@@ -197,6 +209,8 @@ router.put('/me', async (request, response) => {
  * @swagger
  * /users/{id}:
  *  delete:
+ *    security:
+ *      - BearerAuth: []
  *    summary: delete a user
  *    tags: [User]
  *    parameters:
@@ -226,6 +240,8 @@ router.delete('/:id', async (request, response) => {
  * @swagger
  * /users/{id}/follow:
  *  post:
+ *    security:
+ *      - BearerAuth: []
  *    summary: follow an user
  *    tags: [User]
  *    parameters:
@@ -257,6 +273,8 @@ router.post('/:id/follow', async (request, response) => {
  * @swagger
  * /users/{id}/followers:
  *  get:
+ *    security:
+ *      - BearerAuth: []
  *    summary: get followers of a user
  *    tags: [User]
  *    parameters:
@@ -291,13 +309,44 @@ router.get('/:id/followers', async (request, response) => {
   }
 })
 
-// router.get('/:id/following', async (request, response) => {
-//   try {
-//     const following = await getFollowersByUser(request.params.id)
-//     response.json({ following })
-//   } catch (error) {
-//     response.status(500).json(error.message)
-//   }
-// })
+/**
+ * @swagger
+ * /users/{id}/following:
+ *  get:
+ *    security:
+ *      - BearerAuth: []
+ *    summary: get following of a user
+ *    tags: [User]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: the user id
+ *    responses:
+ *      200:
+ *        description: list of user following
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                following:
+ *                  type: array
+ *                  items:
+ *                    $ref: '#/components/schemas/User'
+ *      404:
+ *        description: user not found
+ */
+
+router.get('/:id/following', async (request, response) => {
+  try {
+    const following = await getFollowingUsers(request.params.id)
+    response.json({ following })
+  } catch (error) {
+    response.status(500).json(error.message)
+  }
+})
 
 export default router

@@ -18,6 +18,11 @@ const router = express.Router()
 /**
  * @swagger
  * components:
+ *  securitySchemes:
+ *     BearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
  *  schemas:
  *    Post:
  *      type: object
@@ -78,6 +83,8 @@ const router = express.Router()
  * @swagger
  * /posts:
  * get:
+ *   security:
+ *      - BearerAuth: []
  *   summary: get all posts
  *   tags: [Posts]
  *   responses:
@@ -103,6 +110,8 @@ router.get('/', async (request, response) => {
  * @swagger
  * /posts/{id}:
  *  get:
+ *    security:
+ *      - BearerAuth: []
  *    summary: return post
  *    tags: [Post]
  *    parameters:
@@ -137,6 +146,8 @@ router.get('/:id', async (request, response) => {
  * @swagger
  * /posts:
  *  post:
+ *    security:
+ *      - BearerAuth: []
  *    summary: create new post
  *    tags: [Post]
  *    requestBody:
@@ -170,8 +181,10 @@ router.post('/', async (request, response) => {
  * @swagger
  * /posts/{id}:
  *  put:
+ *    security:
+ *      - BearerAuth: []
  *    summary: update post
- *    tags: [Put]
+ *    tags: [Post]
  *    parameters:
  *      - in: path
  *        name: id
@@ -210,6 +223,8 @@ router.put('/:id', async (request, response) => {
  * @swagger
  * /posts/{id}:
  *  delete:
+ *    security:
+ *      - BearerAuth: []
  *    summary: delete post
  *    tags: [Post]
  *    parameters:
@@ -239,6 +254,8 @@ router.delete('/:id', async (request, response) => {
  * @swagger
  * /posts/{id}/favs:
  *  post:
+ *    security:
+ *      - BearerAuth: []
  *    summary: favorite status of a post by user
  *    tags: [Post]
  *    parameters:
@@ -263,13 +280,14 @@ router.post('/:id/favs', async (request, response) => {
   }
 })
 
-
 // like to post
 /**
  * @swagger
  * /posts/{id}/likes:
  *  post:
- *    summary: add favorite status to post 
+ *    security:
+ *      - BearerAuth: []
+ *    summary: add favorite status to post
  *    tags: [Post]
  *    parameters:
  *      - in: path
@@ -305,6 +323,8 @@ router.post('/:id/likes', async (request, response) => {
  * @swagger
  * /posts/{potId}/comments:
  *  post:
+ *    security:
+ *      - BearerAuth: []
  *    summary: create comment on post
  *    tags: [Post]
  *    parameters:
@@ -340,21 +360,22 @@ router.post('/:postId/comments', async (request, response) => {
   }
 })
 
-
 //Delete comment
 /**
  * @swagger
  * /posts/comments/{commentId}:
  *  delete:
+ *    security:
+ *      - BearerAuth: []
  *    summary: create comment on post
- *    tags: [Delete]
+ *    tags: [Post]
  *    parameters:
  *      - in: path
  *        name: commentId
  *        schema:
  *          type: string
  *        required: true
- *        description: id from comment to delete this 
+ *        description: id from comment to delete this
  *    requestBody:
  *      required: true
  *      content:
@@ -386,6 +407,8 @@ router.delete('/comments/:commentId', async (request, response) => {
  * @swagger
  * /posts/{id}/share:
  *  post:
+ *    security:
+ *      - BearerAuth: []
  *    summary: share post and add this to wall
  *    tags: [Post]
  *    parameters:
@@ -417,12 +440,13 @@ router.post('/:id/share', async (request, response) => {
   }
 })
 
-
 //Reply to comment
 /**
  * @swagger
  * /posts/{postId}/comments/{commentId}/reply:
  *  post:
+ *    security:
+ *      - BearerAuth: []
  *    summary: reply to created comment from post
  *    tags: [Post]
  *    parameters:
@@ -431,7 +455,7 @@ router.post('/:id/share', async (request, response) => {
  *        schema:
  *          type: string
  *        required: true
- *        description: id of the comment to reply this 
+ *        description: id of the comment to reply this
  *    requestBody:
  *      required: true
  *      content:
