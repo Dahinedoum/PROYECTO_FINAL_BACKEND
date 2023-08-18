@@ -171,7 +171,7 @@ router.post('/', async (request, response) => {
  * /posts/{id}:
  *  put:
  *    summary: update post
- *    tags: [Post]
+ *    tags: [Put]
  *    parameters:
  *      - in: path
  *        name: id
@@ -263,6 +263,34 @@ router.post('/:id/favs', async (request, response) => {
   }
 })
 
+
+// like to post
+/**
+ * @swagger
+ * /posts/{id}/likes:
+ *  post:
+ *    summary: add favorite status to post 
+ *    tags: [Post]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: id of the post to add favorite status
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            $ref: '#/components/schemas/UserPostLike'
+ *    responses:
+ *      200:
+ *        description: liked post
+ *      404:
+ *        description: post not found
+ */
 router.post('/:id/likes', async (request, response) => {
   try {
     await togglePostLikeByUser(request.params.id, request.user)
@@ -272,6 +300,33 @@ router.post('/:id/likes', async (request, response) => {
   }
 })
 
+// Create comment
+/**
+ * @swagger
+ * /posts/{potId}/comments:
+ *  post:
+ *    summary: create comment on post
+ *    tags: [Post]
+ *    parameters:
+ *      - in: path
+ *        name: postId
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: id from post to create comment on this
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            $ref: '#/components/schemas/UserPostComment'
+ *    responses:
+ *      200:
+ *        description: updated post
+ *      404:
+ *        description: post not found
+ */
 router.post('/:postId/comments', async (request, response) => {
   try {
     await createPostCommentByUser({
@@ -285,6 +340,34 @@ router.post('/:postId/comments', async (request, response) => {
   }
 })
 
+
+//Delete comment
+/**
+ * @swagger
+ * /posts/comments/{commentId}:
+ *  delete:
+ *    summary: create comment on post
+ *    tags: [Delete]
+ *    parameters:
+ *      - in: path
+ *        name: commentId
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: id from comment to delete this 
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            $ref: '#/components/schemas/UserPostComment'
+ *    responses:
+ *      200:
+ *        description: updated post
+ *      404:
+ *        description: post not found
+ */
 router.delete('/comments/:commentId', async (request, response) => {
   try {
     await deletePostCommentByUser({
@@ -298,6 +381,33 @@ router.delete('/comments/:commentId', async (request, response) => {
   }
 })
 
+//Share post
+/**
+ * @swagger
+ * /posts/{id}/share:
+ *  post:
+ *    summary: share post and add this to wall
+ *    tags: [Post]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: id of the post to share this on wall
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            $ref: '#/components/schemas/Post'
+ *    responses:
+ *      200:
+ *        description: liked post
+ *      404:
+ *        description: post not found
+ */
 router.post('/:id/share', async (request, response) => {
   try {
     await toggleSharePost(request.params.id, request.user)
@@ -307,6 +417,34 @@ router.post('/:id/share', async (request, response) => {
   }
 })
 
+
+//Reply to comment
+/**
+ * @swagger
+ * /posts/{postId}/comments/{commentId}/reply:
+ *  post:
+ *    summary: reply to created comment from post
+ *    tags: [Post]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: id of the comment to reply this 
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            $ref: '#/components/schemas/UserPostComment'
+ *    responses:
+ *      200:
+ *        description: liked post
+ *      404:
+ *        description: post not found
+ */
 router.post('/:postId/comments/:commentId/reply', async (req, res) => {
   try {
     await replyToComment({
