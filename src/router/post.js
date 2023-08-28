@@ -72,10 +72,10 @@ const router = express.Router()
  *        steps:
  *          title: step 1
  *          description: beat 2 - 3 eggs
- *          title: step 2
- *          description: cut potatoes and mix with the egg
- *          title: step 3
- *          description: put everything in the pan
+ *          title2: step 2
+ *          description2: cut potatoes and mix with the egg
+ *          title3: step 3
+ *          description3: put everything in the pan
  */
 
 // Get posts
