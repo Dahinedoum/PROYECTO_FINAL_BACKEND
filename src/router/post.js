@@ -98,7 +98,7 @@ const router = express.Router()
  */
 router.get('/', async (request, response) => {
   try {
-    const posts = await getPosts(request.query)
+    const posts = await getPosts({ filters: request.query, user: request.user })
     response.json({ posts })
   } catch (e) {
     response.status(500).json(e.message)
@@ -135,7 +135,7 @@ router.get('/', async (request, response) => {
 router.get('/:id', async (request, response) => {
   try {
     const post = await getPostById(request.params.id)
-    response.json({ post })
+    response.json(post)
   } catch (e) {
     response.status(500).json(e.message)
   }
@@ -163,14 +163,14 @@ router.get('/:id', async (request, response) => {
  */
 router.post('/', async (request, response) => {
   try {
-    const createdPost = await createPost({
+    const post = await createPost({
       data: {
         ...request.body,
         userId: request.user._id,
       },
       user: request.user,
     })
-    response.json({ post: createdPost })
+    response.json(post)
   } catch (e) {
     response.status(500).json(e.message)
   }
