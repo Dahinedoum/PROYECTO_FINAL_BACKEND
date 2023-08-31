@@ -16,7 +16,31 @@ export const getPosts = async ({ filters, user }) => {
     if (filters.type) {
       filtersData.type = filters.type
     }
+
+    if (filters.title) {
+      filtersData.title = { $regex: filters.title }
+    }
+
+    const validPostDifficulty = ['Easy', 'Moderate', 'Difficult']
+    if (filters.difficulty) {
+      if (!validPostDifficulty.includes(filters.difficulty)) {
+        throw new Error('You must provide a valid difficulty level')
+      } else {
+        filtersData.difficulty = filters.difficulty
+      }
+    }
+
+    if (filters.diners) {
+      filtersData.diners = filters.diners
+    }
+
+    if (filters.allergies) {
+      filtersData.allergies = {
+        $in: filters.allergies.split(','),
+      }
+    }
   }
+
   let posts = await Post.find(filtersData)
 
   const postsIds = posts.map((post) => post._id)
