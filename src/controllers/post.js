@@ -5,21 +5,56 @@ import UserPostComment from '../models/user_post_comment.js'
 
 import { validatePostAllergies } from '../utils/post.js'
 
-//Get posts
 /**
+ * {object} filters
+ * {object} user
  * @return {Promise<object[]>}
  */
-export const getPosts = async (filters) => {
+export const getPosts = async ({ filters, user }) => {
   const filtersData = {}
   if (filters) {
     if (filters.type) {
       filtersData.type = filters.type
     }
   }
-  return Post.find(filtersData)
+  let posts = await Post.find(filtersData)
+
+  const postsIds = posts.map((post) => post._id)
+  const likedPosts = await UserPostLike.find({
+    postId: { $in: postsIds },
+    userId: user._id,
+  })
+
+  posts = posts.map((post) => {
+    let isFav = false
+    let isShared = false
+    let isLike = false
+
+    if (user.favPosts && user.favPosts.length > 0) {
+      isFav = user.favPosts.includes(post._id.toString())
+    }
+
+    if (user.sharedPosts && user.sharedPosts.length > 0) {
+      isShared = user.sharedPosts.includes(post._id.toString())
+    }
+
+    if (likedPosts && likedPosts.length > 0) {
+      isLike = !!likedPosts.find(
+        (likedPost) => likedPost.postId.toString() === post._id.toString()
+      )
+    }
+
+    return {
+      ...post.toObject(),
+      isFav,
+      isShared,
+      isLike,
+    }
+  })
+
+  return posts
 }
 
-//Get post by id
 /**
  * @param {string} id
  * @return {Promise<object>}
