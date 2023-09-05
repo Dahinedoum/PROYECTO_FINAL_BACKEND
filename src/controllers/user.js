@@ -7,17 +7,14 @@ import UserPostLike from '../models/user_post_like.js'
  * @returns {Promise<object>}
  */
 
-export const getAllUsers = async ({ filters, user }) => {
-  if (!user) {
-    throw new Error('You need to have an account to view this list')
-  }
+export const getAllUsers = async ({ filters }) => {
   const filtersData = {}
   if (filters) {
     if (filters.username) {
       filtersData.username = { $regex: filters.username }
     }
   }
-  return User.find()
+  return User.find(filtersData)
 }
 
 /**
