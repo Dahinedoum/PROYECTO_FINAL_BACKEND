@@ -7,7 +7,7 @@ import UserPostLike from '../models/user_post_like.js'
  * @returns {Promise<object>}
  */
 
-export const getAllUsers = async ({ filters }) => {
+export const getAllUsers = async (filters) => {
   const filtersData = {}
   if (filters) {
     if (filters.username) {
