@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt'
 import User from '../models/user.js'
 import UserPostLike from '../models/user_post_like.js'
+import Post from '../models/post.js'
 
 /**
  * @param {object} user
@@ -24,26 +25,42 @@ export const getAllUsers = async ({ filters }) => {
  */
 export const getUserById = async (id) => {
   const user = await User.findOne({ _id: id })
-    .populate('favPosts')
     .populate('following')
+    .populate('followers')
     .populate('sharedPosts')
 
   if (!user) {
     throw new Error('User not found')
   }
-  const likes = await UserPostLike.find({ userId: user._id }).select('postId')
 
-  const likePosts = likes.map((like) => like.postId)
-
-  const followers = await getFollowersByUser(user._id)
-
-  const following = await getFollowingUsers(user._id)
+  const userPosts = await Post.find({ userId: user._id })
 
   return {
     ...user.toObject(),
+    posts: userPosts,
+  }
+}
+
+export const getUserProfileById = async (id) => {
+  const user = await User.findOne({ _id: id })
+    .populate('favPosts')
+    .populate('following')
+    .populate('followers')
+    .populate('sharedPosts')
+
+  if (!user) {
+    throw new Error('User not found')
+  }
+
+  const userPosts = await Post.find({ userId: user._id })
+
+  const likes = await UserPostLike.find({ userId: user._id }).select('postId')
+  const likePosts = likes.map((like) => like.postId)
+
+  return {
+    ...user.toObject(),
+    posts: userPosts,
     likePosts: likePosts,
-    followers: followers,
-    following: following,
   }
 }
 
