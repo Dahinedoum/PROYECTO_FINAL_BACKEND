@@ -131,14 +131,6 @@ export const updateUserInfo = async ({ user, data }) => {
     user.biography = data.biography
   }
 
-  if (data.avatar) {
-    user.avatar = data.avatar
-  }
-
-  if (data.city) {
-    user.city = data.city
-  }
-
   if (data.country) {
     user.country = data.country
   }
