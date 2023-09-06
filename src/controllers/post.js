@@ -118,7 +118,7 @@ export const getPostById = async (id) => {
  * @param {string} data.description
  * @param {{ name: string, quantity: number, unity: "Liter" | "Milliliters" | "Kilograms" | "Grams" | "Pound" | "Ounce" | "Tablespoon" | "Tablespoon dessert" }} data.ingredients
  * @param {number} data.diners
- * @param {{title: string, description: string, order: number, image: string }} data.steps
+ * @param {{title: string, description: string, order: number }} data.steps
  */
 export const createPost = async ({ data, user }) => {
   const {
@@ -203,7 +203,7 @@ export const createPost = async ({ data, user }) => {
  * @param {string} data.description
  * @param {{ name: string, quantity: number, unity: "Liter" | "Milliliters" | "Kilograms" | "Grams" | "Pound" | "Ounce" | "Tablespoon" | "Tablespoon dessert" }} data.ingredients
  * @param {number} data.dinners
- * @param {{title: string, description: string, order: number, image: string }} data.steps
+ * @param {{title: string, description: string, order: number }} data.steps
  */
 export const updatePostById = async ({ id, data, user }) => {
   const {

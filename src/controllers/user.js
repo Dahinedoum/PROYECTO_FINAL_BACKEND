@@ -226,6 +226,12 @@ export const toggleFollowingByUser = async (userId, user) => {
   await User.updateOne({ _id: user._id }, { following: newFollowingList })
 }
 
+/**
+ *
+ * @param {string} userId
+ * @returns {Promise<object[]>}
+ */
+
 export const getFollowingUsers = async (userId) => {
   if (!userId) {
     throw new Error('User ID is required')

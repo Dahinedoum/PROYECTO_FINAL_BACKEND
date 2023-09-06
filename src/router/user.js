@@ -96,7 +96,7 @@ const router = express.Router()
 
 router.get('/', async (request, response) => {
   try {
-    const users = await getAllUsers(request.user)
+    const users = await getAllUsers({ filters: request.query })
     response.json({ users })
   } catch (error) {
     response.status(500).json(error.message)
