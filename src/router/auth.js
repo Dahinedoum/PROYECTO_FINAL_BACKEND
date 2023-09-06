@@ -34,12 +34,6 @@ const router = express.Router()
  *        biography:
  *          type: string
  *          description: a description of the user
- *        avatar:
- *          type: string
- *          description: the photo url of the user
- *        city:
- *          type: string
- *          description: the city of the user
  *        country:
  *          type: string
  *          description: the country of the user
@@ -56,8 +50,6 @@ const router = express.Router()
  *        age: 25
  *        gender: male
  *        biography: i love to cook!
- *        avatar: https://pixabay.com/es/vectors/hombre-masculino-avatar-an%C3%B3nimo-303792/
- *        city: Tokyo
  *        country: Japan
  *
  */

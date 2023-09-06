@@ -24,7 +24,6 @@ const UserSchema = new mongoose.Schema(
     },
     lastName: {
       type: String,
-      require: true,
     },
     age: {
       type: Number,
@@ -36,12 +35,6 @@ const UserSchema = new mongoose.Schema(
       enum: ['male', 'female', 'non-binary'],
     },
     biography: {
-      type: String,
-    },
-    avatar: {
-      type: String,
-    },
-    city: {
       type: String,
     },
     country: {
@@ -62,7 +55,7 @@ const UserSchema = new mongoose.Schema(
     sharedPosts: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Post', 
+        ref: 'Post',
       },
     ],
     followers: [

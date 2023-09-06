@@ -48,16 +48,13 @@ export const signup = async ({
   age,
   country,
   gender,
-  city,
   biography,
-  avatar,
 }) => {
   if (
     !email ||
     !password ||
     !username ||
     !firstName ||
-    !lastName ||
     !age ||
     !country ||
     !gender
@@ -93,14 +90,6 @@ export const signup = async ({
     throw new Error('Please select a country')
   }
 
-  if (city && typeof city !== 'string') {
-    throw new Error('Please select a city')
-  }
-
-  if (avatar && typeof avatar !== 'string') {
-    throw new Error('Please select an avatar')
-  }
-
   if (biography && typeof biography !== 'string') {
     throw new Error('Please put your biography')
   }
@@ -123,9 +112,7 @@ export const signup = async ({
     age,
     country,
     gender,
-    city,
     biography,
-    avatar,
   })
 
   await user.save()
