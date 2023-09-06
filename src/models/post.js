@@ -26,7 +26,6 @@ const PostSchema = new mongoose.Schema(
       type: String,
       enum: ['Easy', 'Moderate', 'Difficult'],
     },
-
     allergies: [
       {
         type: String,

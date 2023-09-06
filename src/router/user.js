@@ -7,6 +7,7 @@ import {
   updateUserInfo,
   getFollowersByUser,
   getFollowingUsers,
+  getUserProfileById,
 } from '../controllers/user.js'
 
 const router = express.Router()
@@ -128,6 +129,15 @@ router.get('/me', async (request, response) => {
   }
 })
 
+router.get('/profile', async (request, response) => {
+  try {
+    const user = await getUserProfileById(request.user._id)
+    response.json(user)
+  } catch (error) {
+    response.status(500).json(error.message)
+  }
+})
+
 /**
  * @swagger
  * /users/{id}:
@@ -158,7 +168,8 @@ router.get('/me', async (request, response) => {
 router.get('/:id', async (request, response) => {
   try {
     const user = await getUserById(request.params.id)
-    response.json({ user })
+
+    response.json(user)
   } catch (error) {
     response.status(500).json(error.message)
   }
