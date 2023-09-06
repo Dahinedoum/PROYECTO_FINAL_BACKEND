@@ -88,11 +88,6 @@ const PostSchema = new mongoose.Schema(
         order: {
           type: Number,
         },
-        image: [
-          {
-            type: String,
-          },
-        ],
       },
     ],
     createdAt: {
