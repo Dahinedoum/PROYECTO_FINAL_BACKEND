@@ -111,9 +111,9 @@ export const getPostById = async (id) => {
  * @param {string} data.userId
  * @param {string} data.mainImage
  * @param {string} data.title
- * @param {"Salad" | "Dessert" | "Breakfast"} data.type
+ * @param {"Salad" | "Dessert" | "Breakfast" | ""} data.type
  * @param {number} data.duration
- * @param {"Easy" | "Moderate" | "Difficult"} data.difficulty
+ * @param {"Easy" | "Moderate" | "Difficult" | ""} data.difficulty
  * @param {"Gluten" | "Crustaceans" | "Eggs" | "Fish" | "Peanuts" | "Soy" | "Dairy" | "Nuts in shell" | "Celery"  | "Mustard" | "Sesame" | "Sulphites" | "Lupins" | "Mollusks"} data.allergies
  * @param {string} data.description
  * @param {{ name: string, quantity: number, unity: "Liter" | "Milliliters" | "Kilograms" | "Grams" | "Pound" | "Ounce" | "Tablespoon" | "Tablespoon dessert" }} data.ingredients
@@ -144,14 +144,17 @@ export const createPost = async ({ data, user }) => {
     throw new Error('This post already exist!')
   }
 
-  const validPostType = ['Salad', 'Dessert', 'Breakfast']
-  if (!validPostType.includes(type)) {
-    throw new Error('This is not valid type')
-  }
+  const validPostType = ['Salad', 'Dessert', 'Breakfast', '']
+  if (type)
+    if (!validPostType.includes(type)) {
+      throw new Error('This is not valid type')
+    }
 
-  const validPostDifficulty = ['Easy', 'Moderate', 'Difficult']
-  if (!validPostDifficulty.includes(difficulty)) {
-    throw new Error('This is not valid difficulty')
+  const validPostDifficulty = ['Easy', 'Moderate', 'Difficult', '']
+  if (difficulty) {
+    if (!validPostDifficulty.includes(difficulty)) {
+      throw new Error('This is not valid difficulty')
+    }
   }
 
   const validPostIngredientsUnity = [
