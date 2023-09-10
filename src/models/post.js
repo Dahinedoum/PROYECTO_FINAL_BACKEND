@@ -16,7 +16,7 @@ const PostSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ['Salad', 'Dessert', 'Breakfast'],
+      enum: ['Salad', 'Dessert', 'Breakfast', ''],
     },
     duration: {
       type: String,
@@ -24,7 +24,7 @@ const PostSchema = new mongoose.Schema(
     },
     difficulty: {
       type: String,
-      enum: ['Easy', 'Moderate', 'Difficult'],
+      enum: ['Easy', 'Moderate', 'Difficult', ''],
     },
     allergies: [
       {
