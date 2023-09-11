@@ -57,6 +57,7 @@ const startApp = async () => {
   app.use('/posts', postsRouter)
   app.use('/users', usersRouter)
 
+
   try {
     await connectToDb()
     app.listen(port, () => {

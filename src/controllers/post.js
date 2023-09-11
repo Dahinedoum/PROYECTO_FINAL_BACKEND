@@ -389,28 +389,66 @@ export const togglePostLikeByUser = async (postId, user) => {
   }
 }
 
-// Create comment controller
-/**
- *
- * @param {string} postId
- * @param {object} data
- * @param {string} data.comment
- * @param {object} user
- * @param {string} user._id
- */
-export const createPostCommentByUser = async ({ postId, data, user }) => {
-  if (!data.comment) {
-    throw new Error('Missing comment')
+// // Create comment controller
+// /**
+//  *
+//  * @param {string} postId
+//  * @param {object} data
+//  * @param {string} data.comment
+//  * @param {object} user
+//  * @param {string} user._id
+//  */
+// export const createPostCommentByUser = async ({ postId, data, user }) => {
+//   if (!data.comment) {
+//     throw new Error('Missing comment')
+//   }
+
+//   const post = await getPostById(postId)
+//   const postComment = new UserPostComment({
+//     postId: post._id,
+//     userId: user._id,
+//     comment: data.comment,
+//   })
+
+//   await postComment.save()
+// }
+
+export const guardarComentario = async (req, res) => {
+  try {
+    const { userId, postId, comment, replyTo } = req.body
+    const nuevoComentario = new UserPostComment({
+      userId,
+      postId,
+      comment,
+      replyTo,
+    })
+
+    await nuevoComentario.save()
+
+    // Obtener el comentario recién guardado con el _id asignado por MongoDB
+    const comentarioGuardado = await UserPostComment.findById(
+      nuevoComentario._id
+    )
+
+    res.status(201).json({
+      mensaje: 'Comentario guardado con éxito',
+      comentario: comentarioGuardado,
+    })
+  } catch (error) {
+    console.error('Error al guardar el comentario:', error)
+    res.status(500).json({ error: 'Error interno del servidor' })
   }
+}
 
-  const post = await getPostById(postId)
-  const postComment = new UserPostComment({
-    postId: post._id,
-    userId: user._id,
-    comment: data.comment,
-  })
-
-  await postComment.save()
+export const obtenerComentarios = async (req, res) => {
+  try {
+    const postId = req.params.postId
+    const comentarios = await UserPostComment.find({ postId })
+    res.json(comentarios)
+  } catch (error) {
+    console.error('Error al obtener comentarios:', error)
+    res.status(500).json({ error: 'Error interno del servidor' })
+  }
 }
 
 /**
