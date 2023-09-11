@@ -36,7 +36,7 @@ export const getPosts = async ({ filters, user }) => {
 
     if (filters.allergies) {
       filtersData.allergies = {
-        $in: filters.allergies.split(','),
+        $nin: filters.allergies.split(','),
       }
     }
   }
@@ -167,8 +167,9 @@ export const createPost = async ({ data, user }) => {
     'Tablespoon',
     'Tablespoon dessert',
   ]
-  if (ingredients.unity) {
-    if (!validPostIngredientsUnity.includes(ingredients.unity)) {
+
+  for (const ingredient of ingredients) {
+    if (!validPostIngredientsUnity.includes(ingredient.unity)) {
       throw new Error('This is not valid unity')
     }
   }
@@ -190,11 +191,13 @@ export const createPost = async ({ data, user }) => {
     diners,
     steps,
   })
+
   return post.save()
 }
 
-//Update post
 /**
+ * @param {string} id
+ * @param {object} user
  * @param {object} data
  * @param {string} data.userId
  * @param {string} data.mainImage
@@ -283,22 +286,24 @@ export const updatePostById = async ({ id, data, user }) => {
     post.allergies = allergies
   }
 
-  const validPostIngredientsUnity = [
-    'Liter',
-    'Milliliters',
-    'Kilograms',
-    'Grams',
-    'Pound',
-    'Ounce',
-    'Tablespoon',
-    'Tablespoon dessert',
-  ]
-  if (ingredients.unity) {
-    if (!validPostIngredientsUnity.includes(ingredients.unity)) {
-      throw new Error('This is not valid unity')
+  if (ingredients) {
+    const validPostIngredientsUnity = [
+      'Liter',
+      'Milliliters',
+      'Kilograms',
+      'Grams',
+      'Pound',
+      'Ounce',
+      'Tablespoon',
+      'Tablespoon dessert',
+    ]
+
+    for (const ingredient of ingredients) {
+      if (!validPostIngredientsUnity.includes(ingredient.unity)) {
+        throw new Error('This is not valid unity')
+      }
     }
-  } else {
-    post.ingredients.unity = ingredients.unity
+    post.ingredients = ingredients
   }
 
   await post.save()

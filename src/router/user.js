@@ -8,6 +8,7 @@ import {
   getFollowersByUser,
   getFollowingUsers,
   getUserProfileById,
+  getUserMe,
 } from '../controllers/user.js'
 
 const router = express.Router()
@@ -115,7 +116,8 @@ router.get('/', async (request, response) => {
 
 router.get('/me', async (request, response) => {
   try {
-    response.json(request.user)
+    const user = await getUserMe(request.user._id)
+    response.json(user)
   } catch (error) {
     response.status(500).json(error.message)
   }
