@@ -7,10 +7,12 @@ import {
   deletePostById,
   togglePostFavByUser,
   togglePostLikeByUser,
-  createPostCommentByUser,
+  // createPostCommentByUser,
   deletePostCommentByUser,
   toggleSharePost,
   replyToComment,
+  guardarComentario,
+  obtenerComentarios,
 } from '../controllers/post.js'
 
 const router = express.Router()
@@ -318,47 +320,53 @@ router.post('/:id/likes', async (request, response) => {
   }
 })
 
-// Create comment
-/**
- * @swagger
- * /posts/{potId}/comments:
- *  post:
- *    security:
- *      - BearerAuth: []
- *    summary: create comment on post
- *    tags: [Post]
- *    parameters:
- *      - in: path
- *        name: postId
- *        schema:
- *          type: string
- *        required: true
- *        description: id from post to create comment on this
- *    requestBody:
- *      required: true
- *      content:
- *        application/json:
- *          schema:
- *            type: object
- *            $ref: '#/components/schemas/UserPostComment'
- *    responses:
- *      200:
- *        description: updated post
- *      404:
- *        description: post not found
- */
-router.post('/:postId/comments', async (request, response) => {
-  try {
-    await createPostCommentByUser({
-      postId: request.params.postId,
-      data: request.body,
-      user: request.user,
-    })
-    response.json(true)
-  } catch (error) {
-    response.status(500).json(error.message)
-  }
-})
+// // Create comment
+// /**
+//  * @swagger
+//  * /posts/{potId}/comments:
+//  *  post:
+//  *    security:
+//  *      - BearerAuth: []
+//  *    summary: create comment on post
+//  *    tags: [Post]
+//  *    parameters:
+//  *      - in: path
+//  *        name: postId
+//  *        schema:
+//  *          type: string
+//  *        required: true
+//  *        description: id from post to create comment on this
+//  *    requestBody:
+//  *      required: true
+//  *      content:
+//  *        application/json:
+//  *          schema:
+//  *            type: object
+//  *            $ref: '#/components/schemas/UserPostComment'
+//  *    responses:
+//  *      200:
+//  *        description: updated post
+//  *      404:
+//  *        description: post not found
+//  */
+// router.post('/:postId/comments', async (request, response) => {
+//   try {
+//     await createPostCommentByUser({
+//       postId: request.params.postId,
+//       data: request.body,
+//       user: request.user,
+//     })
+//     response.json(true)
+//   } catch (error) {
+//     response.status(500).json(error.message)
+//   }
+// })
+
+
+router.post('/comentarios/', guardarComentario)
+// Ruta para obtener comentarios de un post específico
+router.get('/comentarios/:postId', obtenerComentarios)
+
 
 //Delete comment
 /**
