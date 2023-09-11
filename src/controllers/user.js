@@ -41,6 +41,18 @@ export const getUserById = async (id) => {
   }
 }
 
+export const getUserMe = async (id) => {
+  const user = await User.findOne({ _id: id })
+    .populate('following')
+    .populate('followers')
+
+  if (!user) {
+    throw new Error('User not found')
+  }
+
+  return user
+}
+
 export const getUserProfileById = async (id) => {
   const user = await User.findOne({ _id: id })
     .populate('favPosts')
