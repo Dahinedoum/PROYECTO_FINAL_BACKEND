@@ -15,7 +15,54 @@ export const getAllUsers = async ({ filters }) => {
       filtersData.username = { $regex: filters.username }
     }
   }
-  return User.find(filtersData)
+  const users = await User.find(filtersData)
+  const usersIds = users.map((user) => user._id.toString())
+
+  const posts = await Post.find({ userId: { $in: usersIds } })
+  const postsIds = users.map((user) => user._id.toString())
+
+  const postsLikes = await UserPostLike.find({ postId: { $in: postsIds } })
+
+  const postCountByUser = {}
+  posts.forEach((post) => {
+    if (postCountByUser[post.userId]) {
+      postCountByUser[post.userId]++
+    } else {
+      postCountByUser[post.userId] = 1
+    }
+  })
+
+  return users.sort((a, b) => {
+    const postCountA = postCountByUser[a.id] || 0
+    const postCountB = postCountByUser[b.id] || 0
+
+    if (postCountA !== postCountB) {
+      return postCountB - postCountA // Ordena por cantidad de posts descendente
+    } else {
+      // En caso de empate, ordena por la cantidad de likes
+      const totalLikesA = posts
+        .filter((post) => post.userId === a.id)
+        .reduce(
+          (acc, post) =>
+            acc +
+              postsLikes.filter(
+                (pl) => pl.postId.toString() === post._id.toString()
+              ).length || 0,
+          0
+        )
+      const totalLikesB = posts
+        .filter((post) => post.userId === b.id)
+        .reduce(
+          (acc, post) =>
+            acc +
+              postsLikes.filter(
+                (pl) => pl.postId.toString() === post._id.toString()
+              ).length || 0,
+          0
+        )
+      return totalLikesB - totalLikesA // Ordena por cantidad de likes descendente
+    }
+  })
 }
 
 /**
