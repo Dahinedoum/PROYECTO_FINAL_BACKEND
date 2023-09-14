@@ -16,7 +16,18 @@ const PostSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ['Salad', 'Dessert', 'Breakfast', ''],
+      enum: [
+        'Salad',
+        'Dessert',
+        'Breakfast',
+        'Chinese',
+        'Japanese',
+        'Mediterranean',
+        'Thai',
+        'American',
+        'Vegan',
+        '',
+      ],
     },
     duration: {
       type: String,
@@ -24,7 +35,7 @@ const PostSchema = new mongoose.Schema(
     },
     difficulty: {
       type: String,
-      enum: ['Easy', 'Moderate', 'Difficult', ''],
+      enum: ['Easy', 'Intermediate', 'Advanced', ''],
     },
     allergies: [
       {
@@ -38,7 +49,7 @@ const PostSchema = new mongoose.Schema(
           'Peanuts',
           'Soy',
           'Dairy',
-          'Nuts in shell',
+          'Nuts',
           'Celery',
           'Mustard',
           'Sesame',
