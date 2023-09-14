@@ -428,7 +428,8 @@ export const togglePostLikeByUser = async (postId, user) => {
 
 export const guardarComentario = async (req, res) => {
   try {
-    const { userId, postId, comment, replyTo } = req.body
+    const userId = req.user._id
+    const { postId, comment, replyTo } = req.body
     const nuevoComentario = new UserPostComment({
       userId,
       postId,
