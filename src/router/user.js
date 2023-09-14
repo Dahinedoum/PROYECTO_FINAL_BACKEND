@@ -272,7 +272,6 @@ router.post('/:id/follow', async (request, response) => {
   }
 })
 
-//Followers
 
 /**
  * @swagger
