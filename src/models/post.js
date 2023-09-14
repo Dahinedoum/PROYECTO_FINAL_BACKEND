@@ -30,7 +30,7 @@ const PostSchema = new mongoose.Schema(
       ],
     },
     duration: {
-      type: String,
+      type: Number,
       require: true,
     },
     difficulty: {
