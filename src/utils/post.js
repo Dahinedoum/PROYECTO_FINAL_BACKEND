@@ -6,7 +6,7 @@ const ALLERGIES = {
   PEANUTS: 'Peanuts',
   SOY: 'Soy',
   DAIRY: 'Dairy',
-  NUTS_IN_THE_SHELL: 'Nuts in shell',
+  NUTS: 'Nuts',
   CELLERY: 'Celery',
   MUSTARD: 'Mustard',
   SESAME: 'Sesame',

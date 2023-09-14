@@ -6,22 +6,40 @@ import UserPostComment from '../models/user_post_comment.js'
 import { validatePostAllergies } from '../utils/post.js'
 
 /**
- * {object} filters
- * {object} user
+ * @param {object} filters
+ * @param {object} user
  * @return {Promise<object[]>}
  */
 export const getPosts = async ({ filters, user }) => {
   const filtersData = {}
+
   if (filters) {
+    const validPostType = [
+      'Salad',
+      'Dessert',
+      'Breakfast',
+      'Chinese',
+      'Japanese',
+      'Mediterranean',
+      'Thai',
+      'American',
+      'Vegan',
+      '',
+    ]
+
     if (filters.type) {
-      filtersData.type = filters.type
+      if (!validPostType.includes(filters.type)) {
+        throw new Error('You must provide a valid food type')
+      } else {
+        filtersData.type = filters.type
+      }
     }
 
     if (filters.title) {
       filtersData.title = { $regex: filters.title }
     }
 
-    const validPostDifficulty = ['Easy', 'Moderate', 'Difficult']
+    const validPostDifficulty = ['Easy', 'Intermediate', 'Advanced', '']
     if (filters.difficulty) {
       if (!validPostDifficulty.includes(filters.difficulty)) {
         throw new Error('You must provide a valid difficulty level')
@@ -116,10 +134,10 @@ export const getPostById = async (id) => {
  * @param {string} data.userId
  * @param {string} data.mainImage
  * @param {string} data.title
- * @param {"Salad" | "Dessert" | "Breakfast" | ""} data.type
+ * @param {'Salad' | 'Dessert' | 'Breakfast'| 'Chinese' | 'Japanese' | 'Mediterranean' | 'Thai' | 'American'| 'Vegan' | ''} data.type
  * @param {number} data.duration
- * @param {"Easy" | "Moderate" | "Difficult" | ""} data.difficulty
- * @param {"Gluten" | "Crustaceans" | "Eggs" | "Fish" | "Peanuts" | "Soy" | "Dairy" | "Nuts in shell" | "Celery"  | "Mustard" | "Sesame" | "Sulphites" | "Lupins" | "Mollusks"} data.allergies
+ * @param {"Easy" | "Intermediate" | "Advanced" | ""} data.difficulty
+ * @param {"Gluten" | "Crustaceans" | "Eggs" | "Fish" | "Peanuts" | "Soy" | "Dairy" | "Nuts" | "Celery"  | "Mustard" | "Sesame" | "Sulphites" | "Lupins" | "Mollusks"} data.allergies
  * @param {string} data.description
  * @param {{ name: string, quantity: number, unity: "Liter" | "Milliliters" | "Kilograms" | "Grams" | "Pound" | "Ounce" | "Tablespoon" | "Tablespoon dessert" }} data.ingredients
  * @param {number} data.diners
@@ -149,13 +167,24 @@ export const createPost = async ({ data, user }) => {
     throw new Error('This post already exist!')
   }
 
-  const validPostType = ['Salad', 'Dessert', 'Breakfast', '']
+  const validPostType = [
+    'Salad',
+    'Dessert',
+    'Breakfast',
+    'Chinese',
+    'Japanese',
+    'Mediterranean',
+    'Thai',
+    'American',
+    'Vegan',
+    '',
+  ]
   if (type)
     if (!validPostType.includes(type)) {
       throw new Error('This is not valid type')
     }
 
-  const validPostDifficulty = ['Easy', 'Moderate', 'Difficult', '']
+  const validPostDifficulty = ['Easy', 'Intermediate', 'Advanced', '']
   if (difficulty) {
     if (!validPostDifficulty.includes(difficulty)) {
       throw new Error('This is not valid difficulty')
@@ -207,10 +236,10 @@ export const createPost = async ({ data, user }) => {
  * @param {string} data.userId
  * @param {string} data.mainImage
  * @param {string} data.title
- * @param {"Salad" | "Dessert" | "Breakfast"} data.type
+ * @param {'Salad' | 'Dessert' | 'Breakfast'| 'Chinese' | 'Japanese' | 'Mediterranean' | 'Thai' | 'American'| 'Vegan' | ''} data.type
  * @param {number} data.duration
- * @param {"Easy" | "Moderate" | "Difficult"} data.difficulty
- * @param {"Gluten" | "Crustaceans" | "Eggs" | "Fish" | "Peanuts" | "Soy" | "Dairy" | "Nuts in shell" | "Celery"  | "Mustard" | "Sesame" | "Sulphites" | "Lupins" | "Mollusks"} data.allergies
+ * @param {"Easy" | "Intermediate" | "Advanced"} data.difficulty
+ * @param {"Gluten" | "Crustaceans" | "Eggs" | "Fish" | "Peanuts" | "Soy" | "Dairy" | "Nuts" | "Celery"  | "Mustard" | "Sesame" | "Sulphites" | "Lupins" | "Mollusks"} data.allergies
  * @param {string} data.description
  * @param {{ name: string, quantity: number, unity: "Liter" | "Milliliters" | "Kilograms" | "Grams" | "Pound" | "Ounce" | "Tablespoon" | "Tablespoon dessert" }} data.ingredients
  * @param {number} data.dinners
@@ -267,7 +296,18 @@ export const updatePostById = async ({ id, data, user }) => {
     throw new Error("You can't post if you are not registred")
   }
 
-  const validPostType = ['Salad', 'Dessert', 'Breakfast']
+  const validPostType = [
+    'Salad',
+    'Dessert',
+    'Breakfast',
+    'Chinese',
+    'Japanese',
+    'Mediterranean',
+    'Thai',
+    'American',
+    'Vegan',
+    '',
+  ]
   if (type) {
     if (!validPostType.includes(type)) {
       throw new Error('This is not valid type')
@@ -276,7 +316,7 @@ export const updatePostById = async ({ id, data, user }) => {
     post.type = type
   }
 
-  const validPostDifficulty = ['Easy', 'Moderate', 'Difficult']
+  const validPostDifficulty = ['Easy', 'Intermediate', 'Advanced']
   if (difficulty) {
     if (!validPostDifficulty.includes(difficulty)) {
       throw new Error('This is not valid difficulty')
