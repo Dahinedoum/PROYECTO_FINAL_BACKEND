@@ -11,6 +11,8 @@ import {
   getUserMe,
 } from '../controllers/user.js'
 
+import User from '../models/user.js'
+
 const router = express.Router()
 
 /**
@@ -272,6 +274,7 @@ router.post('/:id/follow', async (request, response) => {
   }
 })
 
+//Followers
 
 /**
  * @swagger

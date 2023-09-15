@@ -128,6 +128,7 @@ export const getPostById = async (id) => {
   }
 }
 
+//Create post
 /**
  * @param {object} data
  * @param {string} data.userId
@@ -142,7 +143,6 @@ export const getPostById = async (id) => {
  * @param {number} data.diners
  * @param {{title: string, description: string, order: number }} data.steps
  */
-
 export const createPost = async ({ data, user }) => {
   const {
     mainImage,
@@ -356,6 +356,7 @@ export const updatePostById = async ({ id, data, user }) => {
   return post
 }
 
+//Delete post
 /**
  * @param {string} postId
  * @param {string} userId
@@ -363,7 +364,6 @@ export const updatePostById = async ({ id, data, user }) => {
  * @param {string} user._id
  * @returns {Promise<boolean>}
  */
-
 export const deletePostById = async ({ postId, user }) => {
   const post = await getPostById(postId)
 
@@ -375,12 +375,12 @@ export const deletePostById = async ({ postId, user }) => {
   return true
 }
 
+//Favorite post controller
 /**
  * @param {string} postId
  * @param {object} user
  * @param {object[]} user.favPosts
  */
-
 export const togglePostFavByUser = async (postId, user) => {
   if (!postId) {
     throw new Error('id is required')
@@ -407,13 +407,13 @@ export const togglePostFavByUser = async (postId, user) => {
   await User.updateOne({ _id: user._id }, { favPosts: newFavList })
 }
 
+//Like post controller
 /**
  * @param {string} postId
  * @param {object} user
  * @param {object[]} user.likePosts
  * @param {object[]} post.likes
  */
-
 export const togglePostLikeByUser = async (postId, user) => {
   if (!postId) {
     throw new Error('postId is required')
@@ -442,39 +442,66 @@ export const togglePostLikeByUser = async (postId, user) => {
   }
 }
 
-export const saveComment = async (req, res) => {
+// // Create comment controller
+// /**
+//  *
+//  * @param {string} postId
+//  * @param {object} data
+//  * @param {string} data.comment
+//  * @param {object} user
+//  * @param {string} user._id
+//  */
+// export const createPostCommentByUser = async ({ postId, data, user }) => {
+//   if (!data.comment) {
+//     throw new Error('Missing comment')
+//   }
+
+//   const post = await getPostById(postId)
+//   const postComment = new UserPostComment({
+//     postId: post._id,
+//     userId: user._id,
+//     comment: data.comment,
+//   })
+
+//   await postComment.save()
+// }
+
+export const guardarComentario = async (req, res) => {
   try {
     const userId = req.user._id
     const { postId, comment, replyTo } = req.body
-    const newComment = new UserPostComment({
+    const nuevoComentario = new UserPostComment({
       userId,
       postId,
       comment,
       replyTo,
     })
 
-    await newComment.save()
+    await nuevoComentario.save()
 
-    const savedComment = await UserPostComment.findById(newComment._id)
+    // Obtener el comentario recién guardado con el _id asignado por MongoDB
+    const comentarioGuardado = await UserPostComment.findById(
+      nuevoComentario._id
+    )
 
     res.status(201).json({
-      message: 'Comment saved successfully',
-      comment: savedComment,
+      mensaje: 'Comentario guardado con éxito',
+      comentario: comentarioGuardado,
     })
   } catch (error) {
-    console.error('An error occurred while saving the comment:', error)
-    res.status(500).json({ error: 'Internal server error' })
+    console.error('Error al guardar el comentario:', error)
+    res.status(500).json({ error: 'Error interno del servidor' })
   }
 }
 
-export const getComments = async (req, res) => {
+export const obtenerComentarios = async (req, res) => {
   try {
     const postId = req.params.postId
-    const comments = await UserPostComment.find({ postId })
-    res.json(comments)
+    const comentarios = await UserPostComment.find({ postId })
+    res.json(comentarios)
   } catch (error) {
-    console.error('An error occurred while saving the comment:', error)
-    res.status(500).json({ error: 'Internal server error' })
+    console.error('Error al obtener comentarios:', error)
+    res.status(500).json({ error: 'Error interno del servidor' })
   }
 }
 
