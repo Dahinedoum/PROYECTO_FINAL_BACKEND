@@ -37,8 +37,9 @@ export const getAllUsers = async ({ filters }) => {
     const postCountB = postCountByUser[b.id] || 0
 
     if (postCountA !== postCountB) {
-      return postCountB - postCountA
+      return postCountB - postCountA // Ordena por cantidad de posts descendente
     } else {
+      // En caso de empate, ordena por la cantidad de likes
       const totalLikesA = posts
         .filter((post) => post.userId === a.id)
         .reduce(
@@ -59,7 +60,7 @@ export const getAllUsers = async ({ filters }) => {
               ).length || 0,
           0
         )
-      return totalLikesB - totalLikesA
+      return totalLikesB - totalLikesA // Ordena por cantidad de likes descendente
     }
   })
 }
@@ -214,6 +215,8 @@ export const removeUserById = async (id, user) => {
   return true
 }
 
+//Followers controller
+
 /**
  *
  * @param {string} userId
@@ -224,6 +227,8 @@ export const getFollowersByUser = async (userId) => {
   const followers = await User.find({ following: userId })
   return followers
 }
+
+// Following controller
 
 /**
  *
@@ -246,6 +251,8 @@ export const toggleFollowingByUser = async (userId, user) => {
 
   const currentFollowingUsers = user.following || []
 
+  //checkin if the user is already followed
+
   const isAlreadyFollowing = currentFollowingUsers.find(
     (currentId) => currentId.toString() === userId.toString()
   )
@@ -253,12 +260,14 @@ export const toggleFollowingByUser = async (userId, user) => {
   let newFollowingList = []
 
   if (!isAlreadyFollowing) {
+    //Adding the new user to the following/follower list
     newFollowingList = [...currentFollowingUsers, followingUser._id]
     await User.updateOne(
       { _id: userId },
       { $addToSet: { followers: user._id } }
     )
   } else {
+    //Removing the user from the following/follower list
     newFollowingList = currentFollowingUsers.filter(
       (currentId) => currentId.toString() !== userId.toString()
     )

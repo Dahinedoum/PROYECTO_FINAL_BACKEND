@@ -7,11 +7,12 @@ import {
   deletePostById,
   togglePostFavByUser,
   togglePostLikeByUser,
+  // createPostCommentByUser,
   deletePostCommentByUser,
   toggleSharePost,
   replyToComment,
-  saveComment,
-  getComments,
+  guardarComentario,
+  obtenerComentarios,
 } from '../controllers/post.js'
 
 const router = express.Router()
@@ -79,6 +80,7 @@ const router = express.Router()
  *          description3: put everything in the pan
  */
 
+// Get posts
 /**
  * @swagger
  * /posts:
@@ -96,7 +98,6 @@ const router = express.Router()
  *             type: object
  *             $ref: '#/components/schemas/Post'
  */
-
 router.get('/', async (request, response) => {
   try {
     const posts = await getPosts({ filters: request.query, user: request.user })
@@ -106,6 +107,7 @@ router.get('/', async (request, response) => {
   }
 })
 
+// Get post by id
 /**
  * @swagger
  * /posts/{id}:
@@ -132,7 +134,6 @@ router.get('/', async (request, response) => {
  *      404:
  *        description: post not found
  */
-
 router.get('/:id', async (request, response) => {
   try {
     const post = await getPostById(request.params.id)
@@ -142,6 +143,7 @@ router.get('/:id', async (request, response) => {
   }
 })
 
+// Create post
 /**
  * @swagger
  * /posts:
@@ -161,7 +163,6 @@ router.get('/:id', async (request, response) => {
  *      200:
  *        description: post created
  */
-
 router.post('/', async (request, response) => {
   try {
     const post = await createPost({
@@ -177,6 +178,7 @@ router.post('/', async (request, response) => {
   }
 })
 
+// Update post
 /**
  * @swagger
  * /posts/{id}:
@@ -205,7 +207,6 @@ router.post('/', async (request, response) => {
  *      404:
  *        description: post not found
  */
-
 router.put('/:id', async (request, response) => {
   try {
     const updatedPost = await updatePostById({
@@ -219,6 +220,7 @@ router.put('/:id', async (request, response) => {
   }
 })
 
+// Delete post
 /**
  * @swagger
  * /posts/{id}:
@@ -240,7 +242,6 @@ router.put('/:id', async (request, response) => {
  *      404:
  *        description: post not found
  */
-
 router.delete('/:id', async (request, response) => {
   try {
     await deletePostById({ postId: request.params.id, user: request.user })
@@ -250,6 +251,7 @@ router.delete('/:id', async (request, response) => {
   }
 })
 
+// Favorite post route
 /**
  * @swagger
  * /posts/{id}/favs:
@@ -271,7 +273,6 @@ router.delete('/:id', async (request, response) => {
  *      404:
  *        description: post not found
  */
-
 router.post('/:id/favs', async (request, response) => {
   try {
     await togglePostFavByUser(request.params.id, request.user)
@@ -281,6 +282,7 @@ router.post('/:id/favs', async (request, response) => {
   }
 })
 
+// like to post
 /**
  * @swagger
  * /posts/{id}/likes:
@@ -309,7 +311,6 @@ router.post('/:id/favs', async (request, response) => {
  *      404:
  *        description: post not found
  */
-
 router.post('/:id/likes', async (request, response) => {
   try {
     await togglePostLikeByUser(request.params.id, request.user)
@@ -319,68 +320,55 @@ router.post('/:id/likes', async (request, response) => {
   }
 })
 
-/**
- * @swagger
- * /comments:
- *   post:
- *     summary: Create a new comment.
- *     tags:
- *       - Comments
- *     requestBody:
- *       description: Comment data to be saved.
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Comment'
- *     responses:
- *       201:
- *         description: Comment saved successfully.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/CommentResponse'
- *       500:
- *         description: Internal server error.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- */
+// // Create comment
+// /**
+//  * @swagger
+//  * /posts/{potId}/comments:
+//  *  post:
+//  *    security:
+//  *      - BearerAuth: []
+//  *    summary: create comment on post
+//  *    tags: [Post]
+//  *    parameters:
+//  *      - in: path
+//  *        name: postId
+//  *        schema:
+//  *          type: string
+//  *        required: true
+//  *        description: id from post to create comment on this
+//  *    requestBody:
+//  *      required: true
+//  *      content:
+//  *        application/json:
+//  *          schema:
+//  *            type: object
+//  *            $ref: '#/components/schemas/UserPostComment'
+//  *    responses:
+//  *      200:
+//  *        description: updated post
+//  *      404:
+//  *        description: post not found
+//  */
+// router.post('/:postId/comments', async (request, response) => {
+//   try {
+//     await createPostCommentByUser({
+//       postId: request.params.postId,
+//       data: request.body,
+//       user: request.user,
+//     })
+//     response.json(true)
+//   } catch (error) {
+//     response.status(500).json(error.message)
+//   }
+// })
 
-router.post('/comments/', saveComment)
 
-/**
- * @swagger
- * /comments/{postId}:
- *   get:
- *     summary: Get comments by post ID.
- *     tags:
- *       - Comments
- *     parameters:
- *       - in: path
- *         name: postId
- *         description: ID of the post to retrieve comments for.
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: List of comments for the specified post.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/CommentListResponse'
- *       500:
- *         description: Internal server error.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- */
+router.post('/comentarios/', guardarComentario)
+// Ruta para obtener comentarios de un post específico
+router.get('/comentarios/:postId', obtenerComentarios)
 
-router.get('/comments/:postId', getComments)
 
+//Delete comment
 /**
  * @swagger
  * /posts/comments/{commentId}:
@@ -409,7 +397,6 @@ router.get('/comments/:postId', getComments)
  *      404:
  *        description: post not found
  */
-
 router.delete('/comments/:commentId', async (request, response) => {
   try {
     await deletePostCommentByUser({
@@ -423,6 +410,7 @@ router.delete('/comments/:commentId', async (request, response) => {
   }
 })
 
+//Share post
 /**
  * @swagger
  * /posts/{id}/share:
@@ -451,7 +439,6 @@ router.delete('/comments/:commentId', async (request, response) => {
  *      404:
  *        description: post not found
  */
-
 router.post('/:id/share', async (request, response) => {
   try {
     await toggleSharePost(request.params.id, request.user)
@@ -461,6 +448,7 @@ router.post('/:id/share', async (request, response) => {
   }
 })
 
+//Reply to comment
 /**
  * @swagger
  * /posts/{postId}/comments/{commentId}/reply:
@@ -489,7 +477,6 @@ router.post('/:id/share', async (request, response) => {
  *      404:
  *        description: post not found
  */
-
 router.post('/:postId/comments/:commentId/reply', async (req, res) => {
   try {
     await replyToComment({
